@@ -141,6 +141,71 @@ For the **Insurance** table, we utilized **Mockaroo** to generate a realistic da
 ## 🔄 6. Backup and Restoration
 ---
 
+### 1. Backup Creation
+* **Filename:** `backup_19_03_2026.backup`
+* **Format:** PostgreSQL Custom Format (compressed).
+* **Method:** Generated via **pgAdmin 4 Backup tool** and exported using the **Storage Manager**.
+* **Content:** Complete database state, including schemas, relational constraints, and 20,500+ patient records.
+
+### 2. Portability & Validation
+To verify the backup's integrity, a restoration test was conducted:
+1. Created a clean database instance (`hospital_test_db`).
+2. Performed a **Restore** operation using the generated `.backup` file.
+3. **Verification:** Executed `SELECT count(*) FROM patient;` to confirm all 20,500 records were successfully recovered.
+
+> **Result:** The backup is fully functional and ready to be deployed on any PostgreSQL 16+ instance.
+
+-----
+
+## 🚀 7. How to Run the Project
+
+### Prerequisites
+* **Docker Desktop** installed and running.
+
+### Step 1: Launch the Environment
+1. Open a terminal in the project folder and run:
+   ```bash
+   docker-compose up -d
+
+### Step 2: Connect to pgAdmin
+1. Open your browser and go to: `http://localhost:5050`
+2. **Login with:**
+   * **Email:** `-`
+   * **Password:** `-` 
+3. **Add a new server connection:**
+   * **Name:** `Antigravity-DB`
+   * **Host:** `db`
+   * **Port:** `5432`
+   * **Username:** `-`
+   * **Password:** `-`
+   * **Maintenance database:** `-`
+   **All the elements to fill are defined in ".env"**
+
+### Step 3: Import Insurance Data (CSV)
+1. In the pgAdmin sidebar, navigate to: 
+   **Servers** → **Antigravity-DB** → **Databases** → **basnat** → **Schemas** → **public** → **Tables** → **insurance**.
+2. Right-click on the **insurance** table → **Import/Export Data...**
+3. **Configure the import:**
+   * **Import/Export:** `Import`
+   * **Filename:** Select `db-files/insurance.csv`
+   * **Format:** `CSV`
+   * **Header:** `Yes`
+   * **Delimiter:** `,`
+4. **Important:** In the **Columns** tab, **uncheck** `insurance_id`.
+5. Click **OK** to import ~550 insurance records.
+
+### Step 4: Run Data Scripts
+1. In pgAdmin, open the **Query Tool** (Tools → Query Tool).
+2. Click the **Open File** (📂) button and run these scripts in order:
+   * `db-files/03-insert-table.sql` (Inserts 20,500+ Patients and Admissions).
+   * `db-files/04-mockaroo-allergy.sql` (Inserts allergy data).
+3. Click **Execute** (▶) or press **F5** for each.
+
+### Step 5: Verify the Data
+1. Open the **Query Tool** again.
+2. Open and run the file: `db-files/06-select-all.sql`.
+3. Verify that all tables are populated correctly.
+
 ## 🛠️ Tech Stack & Population Methods
 * **Database:** PostgreSQL (Dockerized)
 * **GUI:** pgAdmin 4
