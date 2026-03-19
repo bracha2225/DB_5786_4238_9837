@@ -1,5 +1,6 @@
-# 🏥 Hospital Management System - Phase 1
-
+# 🏥 Hospital Management System -
+---
+##Stage 1
 **Team Members:** Guila Czerniewicz (2045605), Braha Kalaghi (325464238)
 **System Name:** Antigravity Hospital Suite  
 **Selected Module:** Patient Management & Medical Administration
