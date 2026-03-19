@@ -109,6 +109,7 @@ We utilized advanced PostgreSQL scripting—leveraging the `generate_series()` f
 
 <img width="1059" height="459" alt="image" src="https://github.com/user-attachments/assets/c3ce6b01-2506-4bbc-866f-37c19a9825b2" />
 
+
 ---
 ### Method 2: External Data Generators (Mockaroo)
 
@@ -123,6 +124,7 @@ This method proved highly efficient for meeting the **20,000+ row requirement** 
 * **Enforce Temporal Logic:** Using interval arithmetic (`start_date + random interval`) to guarantee that discharge dates always occur after admission dates, thereby respecting our database constraints.
 
 <img width="1751" height="881" alt="image" src="https://github.com/user-attachments/assets/15cd4c78-d4dc-4d04-897c-f68e2eff7b6e" />
+<img width="1640" height="740" alt="Capture d&#39;écran 2026-03-19 142028" src="https://github.com/user-attachments/assets/6b27b15d-a164-4cb8-bd0e-5be202a4ccf4" />
 
 ### Method 3: Administrative Data (CSV Import)
 
