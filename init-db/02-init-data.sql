@@ -5,6 +5,7 @@
 -- ============================================================
 
 -- 1. PATIENTS (20 000+ lignes)
+TRUNCATE TABLE patient RESTART IDENTITY CASCADE;
 INSERT INTO patient (first_name, last_name, date_of_birth, gender, phone, email, address)
 SELECT 
     'FirstName_' || i,
@@ -16,14 +17,21 @@ SELECT
     i || ' Medical Center Dr, Suite ' || (i % 100)
 FROM generate_series(1, 20500) AS i;
 
--- 2. ADMISSIONS (20 000+ lignes)
+-- 2. ADMISSIONS (Version "Voyageur du Temps" corrigée)
 INSERT INTO admission (patient_id, admission_date, discharge_date, reason)
 SELECT 
-    (random() * 20499 + 1)::int, -- Liaison aléatoire aux patients existants
-    '2022-01-01'::timestamp + (random() * 1500 * interval '1 hour'),
-    '2022-01-01'::timestamp + (random() * 1500 * interval '1 hour') + (random() * 10 * interval '1 day'),
+    (random() * 20499 + 1)::int,
+    start_date,
+    -- On ajoute entre 1 heure et 10 jours à la date d'entrée
+    start_date + (random() * 10 * interval '1 day') + (random() * 24 * interval '1 hour'),
     (ARRAY['Routine checkup', 'Severe flu', 'Broken bone', 'Surgery recovery', 'Cardiac observation'])[ (i % 5) + 1 ]
-FROM generate_series(1, 21000) AS i;
+FROM (
+    SELECT 
+        i, 
+        '2022-01-01'::timestamp + (random() * 3000 * interval '1 hour') AS start_date
+    FROM generate_series(1, 21000) AS i
+) AS sub;
+
 
 -- 3. EMERGENCY_CONTACT (500+ lignes)
 INSERT INTO emergency_contact (patient_id, name, relationship, phone)
