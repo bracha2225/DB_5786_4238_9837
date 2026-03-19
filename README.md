@@ -1,6 +1,6 @@
 # 🏥 Hospital Management System - Phase 1
 
-**Team Members:** Guila Czerniewicz (2045605), Braha Kalaghi  
+**Team Members:** Guila Czerniewicz (2045605), Braha Kalaghi (325464238)
 **System Name:** Antigravity Hospital Suite  
 **Selected Module:** Patient Management & Medical Administration
 
@@ -55,10 +55,86 @@ To visualize the end product, we used Google AI Studio in a Top-Down approach to
 
 ---
 ## 📐 3. Database Design & Diagrams
+
+Our database is designed to reflect the administrative and clinical realities of a modern hospital environment, following standard relational design principles. The schema is normalized to at least 3NF (Third Normal Form) to ensure data integrity, eliminate redundancy, and support high-volume transactions for thousands of patient records.
+
 ---
+
+## 🔗 Entity Relationship Diagram (ERD)
+<img width="4512" height="1902" alt="erdplus (8)" src="https://github.com/user-attachments/assets/47720a20-ad6e-4700-96d6-a4a8583fa5c3" />
+
+---
+
+## 📊 Data Structure Diagram (DSD)
+---
+<img width="4512" height="1902" alt="erdplus (9)" src="https://github.com/user-attachments/assets/13a5dfc7-ff56-4272-b437-7eaf05a8dd88" />
+
+
+---
+
 ## 🏗️ 4. Design Decisions & Architecture
+
+> Our database is designed to reflect the administrative and clinical realities of a modern hospital environment, following standard relational design principles. The schema is **normalized to at least 3NF** (Third Normal Form) to ensure data integrity, eliminate redundancy, and support high-volume transactions for thousands of patient records.
+
+
+
+### Key Architectural Decisions:
+
+* **Normalization (3NF):** We utilized dedicated relational structures to resolve complex dependencies. For instance, separate tables for `Allergy` and `Medical_History` are linked to the `Patient` entity via Foreign Keys. This structure prevents data duplication and update anomalies, ensuring that a single patient can have multiple clinical records without redundant demographic data.
+
+* **Data Integrity (Constraints):** We implemented strict relational constraints to guarantee "Clean Data":
+    * **NOT NULL:** Applied to critical fields like `last_name`, `admission_date`, and `policy_number`.
+    * **UNIQUE:** Enforced on sensitive fields such as `email` and insurance `policy_number` to prevent identity or billing conflicts.
+    * **Check Constraints:** Custom logic (e.g., `check_dates`) ensures that a `discharge_date` cannot occur before an `admission_date`.
+    * **Referential Integrity:** Cascading deletes (`ON DELETE CASCADE`) are used so that if a patient record is removed, all associated admissions and histories are cleaned up, preventing "orphaned" data.
+
+
+
+* **Optimized Data Types:** Appropriate PostgreSQL types were selected for precision and performance:
+    * **TIMESTAMPTZ:** Used for admissions to track exact time across different time zones.
+    * **DATE:** Used for `date_of_birth` to ensure efficient indexing and age calculations.
+    * **VARCHAR/TEXT:** Carefully balanced to handle variable-length notes while optimizing storage for standard fields.
+
+
+
 ---
+
 ## 📥 5. Data Population Methods
+
+To ensure a robust testing environment and simulate a real-world hospital load, the database was populated with realistic mock data using three distinct strategies. We successfully met the requirement of generating at least **500 records** for standard clinical tables and over **20,000 records** for high-volume entities like `Patient` and `Admission`.
+
+### Method 1: Database Scripting & SQL Logic (`generate_series`)
+
+We utilized advanced PostgreSQL scripting—leveraging the `generate_series()` function combined with `ARRAY` constants and `random()` logic—to programmatically generate large-scale datasets directly within the SQL engine. 
+
+<img width="1059" height="459" alt="image" src="https://github.com/user-attachments/assets/c3ce6b01-2506-4bbc-866f-37c19a9825b2" />
+
+---
+### Method 2: External Data Generators (Mockaroo)
+
+For specialized clinical data requiring realistic medical terminology (e.g., `allergy_name`, `severity` levels, and clinical notes), we utilized **Mockaroo** to generate high-fidelity test data. 
+
+This approach allowed us to:
+* **Simulate Clinical Diversity:** Populating the `Allergy` table with 500+ records of common allergens (e.g., Penicillin, Latex, Peanuts) and varying severity levels from 'Low' to 'Life-threatening'.
+* **Consistent Formatting:** Exporting the data directly as **SQL INSERT statements** to ensure seamless integration with our PostgreSQL schema and maintaining strict relational mapping to our existing `patient_id` values.
+
+This method proved highly efficient for meeting the **20,000+ row requirement** for the `Admission` table. By using this approach, we were able to:
+* **Maintain Logical Consistency:** Ensuring that every admission record is linked to a valid `patient_id`.
+* **Enforce Temporal Logic:** Using interval arithmetic (`start_date + random interval`) to guarantee that discharge dates always occur after admission dates, thereby respecting our database constraints.
+
+<img width="1751" height="881" alt="image" src="https://github.com/user-attachments/assets/15cd4c78-d4dc-4d04-897c-f68e2eff7b6e" />
+
+### Method 3: Administrative Data (CSV Import)
+
+For the **Insurance** table, we utilized **Mockaroo** to generate a realistic dataset of 550+ records.
+
+* **Strategy:** Generated unique `policy_number` values to satisfy the database's `UNIQUE` constraint and ensure zero data conflicts during ingestion.
+* **Process:** Imported via pgAdmin 4 using the **Import/Export Tool**.
+* **Key Detail:** We enabled the **Header** option and excluded the `insurance_id` (Identity) column to allow PostgreSQL to handle primary key generation automatically.
+
+<img width="1882" height="923" alt="image" src="https://github.com/user-attachments/assets/dd319b79-0346-43c3-af6a-d75545f77f68" />
+
+
 ---
 ## 🔄 6. Backup and Restoration
 ---
