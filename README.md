@@ -206,7 +206,9 @@ To verify the backup's integrity, a restoration test was conducted:
 2. Open and run the file: `db-files/06-select-all.sql`.
 3. Verify that all tables are populated correctly.
 
+## Summary of Data Sources
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/5a96aef7-8e05-4ec8-8859-3d3728dea295" />
+
 ## 🛠️ Tech Stack & Population Methods
 * **Database:** PostgreSQL (Dockerized)
 * **GUI:** pgAdmin 4
-* **Volume:** 20,000+ entries generated via Python & SQL Scripts.
