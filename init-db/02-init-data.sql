@@ -8,13 +8,20 @@
 TRUNCATE TABLE patient RESTART IDENTITY CASCADE;
 INSERT INTO patient (first_name, last_name, date_of_birth, gender, phone, email, address)
 SELECT 
-    'FirstName_' || i,
-    'LastName_' || i,
+    -- Prénoms aléatoires
+    (ARRAY['James', 'Mary', 'Robert', 'Patricia', 'John', 'Jennifer', 'Michael', 'Linda', 'David', 'Elizabeth', 'William', 'Barbara', 'Richard', 'Susan', 'Joseph', 'Jessica'])[ (i % 16) + 1 ],
+    -- Noms de famille aléatoires
+    (ARRAY['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas'])[ ((i * 3) % 16) + 1 ],
+    -- Date de naissance réaliste
     '1950-01-01'::date + (random() * 25000)::int % ('2024-01-01'::date - '1950-01-01'::date),
+    -- Genre
     (ARRAY['Male', 'Female', 'Other', 'Prefer not to say'])[ (i % 4) + 1 ],
+    -- Téléphone unique
     '05' || (10000000 + i),
-    'patient' || i || '@hospital.com',
-    i || ' Medical Center Dr, Suite ' || (i % 100)
+    -- Email basé sur le nom (plus pro)
+    'patient' || i || '@hospital-mail.com',
+    -- Adresse variée
+    (i % 999) || ' ' || (ARRAY['Maple St', 'Oak Ave', 'Main Blvd', 'Park Rd', 'Lake View', 'Sunset Dr'])[ (i % 6) + 1 ]
 FROM generate_series(1, 20500) AS i;
 
 -- 2. ADMISSIONS (Version "Voyageur du Temps" corrigée)

@@ -38,7 +38,7 @@ WHERE admission_id % 2 = 0; -- Sortir 50% des patients pour le réalisme
 -- 3. EMERGENCY_CONTACT (500+ lignes)
 INSERT INTO emergency_contact (patient_id, name, relationship, phone)
 SELECT 
-    i, -- Un contact pour chacun des 550 premiers patients
+    i, 
     'ContactName_' || i,
     (ARRAY['Spouse', 'Parent', 'Sibling', 'Child', 'Friend'])[ (i % 5) + 1 ],
     '05' || (90000000 - i)
