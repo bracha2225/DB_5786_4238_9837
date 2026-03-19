@@ -39,20 +39,19 @@ This system is strictly bounded to the **medical administration of a human hospi
 To visualize the end product, we used Google AI Studio in a Top-Down approach to generate the initial frontend screens. These mockups dictate the data we need to store and retrieve.
 
 <img width="1225" height="731" alt="image" src="https://github.com/user-attachments/assets/c477cc1d-0391-4424-9655-e4218f4b0ac0" />
+>Patient List Page: A central dashboard that displays all registered patients in a searchable table with quick actions for viewing, editing, or deleting records.
 
-Patient List Page: A central dashboard that displays all registered patients in a searchable table with quick actions for viewing, editing, or deleting records.
 <img width="1242" height="728" alt="image" src="https://github.com/user-attachments/assets/eec79d50-fc3c-4b42-8816-45badc89e0ee" />
+>Add Patient Page: A comprehensive registration form used to capture a new patient's personal details, contact information, and residential address.
 
-Add Patient Page: A comprehensive registration form used to capture a new patient's personal details, contact information, and residential address.
 <img width="1240" height="737" alt="image" src="https://github.com/user-attachments/assets/428e559e-d74b-4108-9318-765bf5890b19" />
+>Patient Details Page: An all-in-one profile view that summarizes a patient's identity, emergency contacts, insurance status, and recent medical history.
 
-Patient Details Page: An all-in-one profile view that summarizes a patient's identity, emergency contacts, insurance status, and recent medical history.
 <img width="1241" height="730" alt="image" src="https://github.com/user-attachments/assets/a0abe2c9-4031-4473-8fdb-f1941b4aca82" />
+>Insurance Information Page: A dedicated management area for viewing, adding, and updating a patient's insurance providers, policy numbers, and coverage dates.
 
-Insurance Information Page: A dedicated management area for viewing, adding, and updating a patient's insurance providers, policy numbers, and coverage dates.
 <img width="1236" height="742" alt="image" src="https://github.com/user-attachments/assets/27c91a9b-1f7b-4750-9169-ac9c76e8dd52" />
-
-Medical Information Page: A detailed clinical record screen focused on tracking patient allergies, chronic conditions, and primary emergency contact details.
+>Medical Information Page: A detailed clinical record screen focused on tracking patient allergies, chronic conditions, and primary emergency contact details.
 
 ---
 ## 📐 3. Database Design & Diagrams
