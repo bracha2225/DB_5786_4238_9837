@@ -172,3 +172,97 @@ JOIN insurance i ON p.patient_id = i.patient_id
 JOIN admission a ON p.patient_id = a.patient_id
 WHERE a.reason LIKE '%Surgery%'
 ORDER BY p.last_name;
+
+
+
+
+
+-- ************************************************************
+-- SECTION C: 3 DELETE QUERIES
+-- ************************************************************
+
+-- ============================================================
+-- DELETE QUERY 1
+-- Description: Deletes emergency contacts for patients who have not been admitted 
+-- to the hospital for more than 5 years.
+-- Context: Data cleanup for inactive records where contact info is no longer relevant.
+DELETE FROM emergency_contact
+WHERE patient_id IN (
+    SELECT p.patient_id
+    FROM patient p
+    LEFT JOIN admission a ON p.patient_id = a.patient_id
+    GROUP BY p.patient_id
+    HAVING MAX(a.admission_date) < CURRENT_DATE - INTERVAL '5 years'
+       OR COUNT(a.admission_id) = 0
+);
+
+
+-- ============================================================
+-- DELETE QUERY 2
+-- Description: Removes insurance records that have expired and belong to patients 
+-- who currently have no active (ongoing) admissions.
+-- Context: Ensures that we don't delete insurance info while a patient is still in the hospital, 
+-- even if the policy technically expired during their stay.
+DELETE FROM insurance
+WHERE expiration_date < CURRENT_DATE
+AND patient_id NOT IN (
+    SELECT patient_id 
+    FROM admission 
+    WHERE discharge_date IS NULL
+);
+
+
+-- ============================================================
+-- DELETE QUERY 3
+-- Description: Deletes specific medical history records (e.g., 'Minor Flu') 
+-- that were diagnosed more than 10 years ago.
+-- Context: Privacy and data minimization by removing old, non-critical medical records.
+DELETE FROM medical_history
+WHERE condition_name = 'Minor Flu'
+AND EXTRACT(YEAR FROM diagnosis_date) < EXTRACT(YEAR FROM CURRENT_DATE) - 10;
+
+
+
+-- ************************************************************
+-- SECTION D: 3 UPDATE QUERIES
+-- ************************************************************
+
+-- ============================================================
+-- UPDATE QUERY 1
+-- Description: Updates the 'notes' field in the allergy table for patients 
+-- who have been admitted more than 3 times for medical reasons.
+-- Context: Flags high-risk allergic patients in the system for special clinical attention.
+UPDATE allergy
+SET notes = CONCAT(notes, ' [CRITICAL: High-frequency admission patient]')
+WHERE patient_id IN (
+    SELECT patient_id
+    FROM admission
+    GROUP BY patient_id
+    HAVING COUNT(admission_id) > 3
+);
+
+
+-- ============================================================
+-- UPDATE QUERY 2
+-- Description: Standardizes the 'coverage_type' to 'Premium Extended' for all patients 
+-- who have 'Life-threatening' allergies, as per a new hospital policy for high-care patients.
+-- Context: Cross-references the insurance table with the allergy table.
+UPDATE insurance
+SET coverage_type = 'Premium Extended'
+WHERE patient_id IN (
+    SELECT patient_id
+    FROM allergy
+    WHERE severity = 'Life-threatening'
+);
+
+
+-- ============================================================
+-- UPDATE QUERY 3
+-- Description: Appends a warning to the notes of medical history records 
+-- for patients whose insurance has already expired.
+-- Context: Alerts doctors that recent medical history might not be covered by the previous provider.
+UPDATE medical_history
+SET notes = CONCAT(notes, ' (Review insurance: Policy expired on ', i.expiration_date, ')')
+FROM insurance i
+WHERE medical_history.patient_id = i.patient_id
+AND i.expiration_date < CURRENT_DATE;
