@@ -45,9 +45,9 @@ SELECT p.first_name, p.last_name, i.provider_name, i.expiration_date
 FROM patient p
 JOIN admission ad ON p.patient_id = ad.patient_id
 JOIN insurance i ON p.patient_id = i.patient_id
-WHERE EXTRACT(YEAR FROM ad.admission_date) = 2023
+WHERE EXTRACT(YEAR FROM ad.admission_date) = 2026 
   AND EXTRACT(YEAR FROM i.expiration_date) = 2026
-ORDER BY i.expiration_date ASC;
+ORDER BY i.expiration_date ASC;;
 
 -- VERSION B:
 SELECT p.first_name, p.last_name, i.provider_name
@@ -57,9 +57,9 @@ WHERE EXTRACT(YEAR FROM i.expiration_date) = 2026
 AND EXISTS (
     SELECT 1 FROM admission ad 
     WHERE ad.patient_id = p.patient_id 
-    AND ad.admission_date BETWEEN '2023-01-01' AND '2023-12-31'
+    
+    AND ad.admission_date BETWEEN '2026-01-01' AND '2026-12-31' 
 );
-
 -- COMPARISON: Version B is better for efficiency.
 -- In Version A, if a patient was admitted 10 times in 2023, the JOIN will create 10 rows for that 
 -- patient before grouping or filtering. Version B uses EXISTS, which stops searching as soon 
@@ -218,7 +218,7 @@ AND patient_id NOT IN (
 -- that were diagnosed more than 10 years ago.
 -- Context: Privacy and data minimization by removing old, non-critical medical records.
 DELETE FROM medical_history
-WHERE condition_name = 'Minor Flu'
+WHERE condition_name = 'Anxiety'
 AND EXTRACT(YEAR FROM diagnosis_date) < EXTRACT(YEAR FROM CURRENT_DATE) - 10;
 
 
