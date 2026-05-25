@@ -71,7 +71,7 @@ WHERE staff_status = 'Active';
 SELECT COUNT(*) AS young_patients_with_staff
 FROM patients.view_patient_medical_assignments
 WHERE date_of_birth > '2000-01-01' AND staffid IS NOT NULL;
-
+```
 #### פלט המבט (View Output)
 להלן תוצאת הרצת המבט בשרת, המציגה את השילוב המלא בין נתוני המטופלים לנתוני אנשי הסגל הרפואי:
 <img width="1918" height="912" alt="viewp" src="https://github.com/user-attachments/assets/e0291bc6-b5f6-4295-9493-49ee558570f3" />
@@ -90,6 +90,7 @@ WHERE date_of_birth > '2000-01-01' AND staffid IS NOT NULL;
 SELECT staffid, firstname, lastname, total_assigned_patients
 FROM staffschema.view_staff_workload
 WHERE total_assigned_patients > 5;
+```
 
 ##### שאילתה 2.2: חישוב הממוצע הכולל של מטופלים המשויכים לאיש סגל
 * **תיאור מילולי:** שאילתה המחשבת את ממוצע המטופלים המשויכים לכל עובד רפואי מתוך המבט שהוקם, לצורך אופטימיזציה של כוח אדם במערכת.
@@ -97,7 +98,7 @@ WHERE total_assigned_patients > 5;
 ```sql
 SELECT AVG(total_assigned_patients) AS average_patients_per_staff
 FROM staffschema.view_staff_workload;
-
+```
 
 #### פלט המבט (View Output)
 להלן תוצאת הרצת המבט השני בשרת, המציגה את ריכוז הנתונים הסופי והסטטיסטיקה של עומס העבודה עבור כל איש סגל:
