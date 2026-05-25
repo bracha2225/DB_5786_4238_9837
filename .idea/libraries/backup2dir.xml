@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="backup2dir">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/DBProject/שלב ב/backup2dir.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
