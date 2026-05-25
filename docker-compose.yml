@@ -14,9 +14,9 @@ services:
       - "5432:5432"
     volumes:
       - ./init-db:/docker-entrypoint-initdb.d
-      - postgres_data:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql/data
     networks:
-      - kids_network
+      - patients_network
 
   # -------------------------
   # pgAdmin
@@ -35,7 +35,7 @@ services:
     depends_on:
       - db
     networks:
-      - kids_network
+      - patients_network
 
 # -------------------------
 # Volumes
@@ -44,6 +44,9 @@ volumes:
   postgres_data:
   pgadmin_data:
 
-
+    #-------------------------
+    # networks
+    #-------------------------
 networks:
-  kids_network:
+  patients_network:
+
