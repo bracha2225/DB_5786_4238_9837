@@ -438,4 +438,99 @@ AND i.expiration_date < CURRENT_DATE;
 
 
 ---
-```
+
+
+## עדכון בסיס הנתונים וביטולו (Rollback)
+
+ביצענו הדמיה של עדכון נתונים בטבלאות המערכת כדי לבדוק את שלמות הנתונים.
+ביצענו עדכון (`UPDATE`) של שם איש הקשר בטבלת `emergency_contact`.
+לאחר מכן, השתמשנו בפקודת `ROLLBACK` כדי לבטל את השינוי ולהחזיר את בסיס הנתונים למצבו המקורי.
+פעולה זו מבטיחה שאם חלה טעות במהלך העדכון, ניתן לחזור אחורה מבלי לפגוע בנתונים הקבועים.
+
+**בדיקת השם המקורי בבסיס הנתונים לפני תחילת התהליך – ניתן לראות שהשם הוא 'Contact_1':**
+
+
+<img width="1597" height="897" alt="image" src="https://github.com/user-attachments/assets/eb517395-e9bd-4bf7-9cf9-ac5ad44aa934" />
+
+
+
+**פתיחת טרנזקציה ועדכון השם ל-'NOM_TEST_ERREUR':**
+
+
+<img width="1518" height="857" alt="image" src="https://github.com/user-attachments/assets/2fe12fa2-623f-4303-a6be-563249872978" />
+
+
+
+**הרצת פקודת ROLLBACK:**
+
+
+<img width="1232" height="642" alt="image" src="https://github.com/user-attachments/assets/da163b63-4916-4f55-bc33-04300a104c1b" />
+
+
+
+**בדיקה חוזרת של הנתונים – השם חזר ל-'Contact_1':**
+
+
+<img width="1295" height="701" alt="image" src="https://github.com/user-attachments/assets/462f86db-3976-464d-b2e5-bb3baa0a073d" />
+
+
+
+---
+
+## עדכון נתונים ואישור סופי (Commit)
+
+ביצענו עדכון (`UPDATE`) של כתובת המגורים בטבלת `patient`.
+לאחר מכן, השתמשנו בפקודת `COMMIT` כדי לאשר את השינוי ולשמור אותו בבסיס הנתונים לצמיתות.
+
+**בדיקת הנתונים המקוריים:**
+
+
+<img width="1226" height="732" alt="image" src="https://github.com/user-attachments/assets/4c257baa-547b-40ce-95e6-c8de5c437753" />
+
+
+
+**עדכון הכתובת בתוך טרנזקציה פתוחה:**
+
+
+<img width="1305" height="765" alt="image" src="https://github.com/user-attachments/assets/ff4e9f11-41e7-4246-a0b5-a1e302499689" />
+
+
+
+**הרצת פקודת COMMIT:**
+
+
+<img width="1037" height="622" alt="image" src="https://github.com/user-attachments/assets/bfa46caf-39a3-4a9e-9f1f-307b97df13ae" />
+
+
+
+**אימות שהנתונים החדשים נשמרו:**
+
+
+<img width="1186" height="726" alt="image" src="https://github.com/user-attachments/assets/71734bc4-4349-448f-bd6e-4f9c51596f73" />
+
+
+
+
+---
+
+## הוספת 3 אילוצים (Constraints)
+
+החלטנו להוסיף את שלושת האילוצים האלו כדי להבטיח את תקינות הנתונים (Data Integrity):
+
+1. **פורמט אימייל (`check_email_at`):** מוודא שבזמן ההכנסה קיים התו `@`.
+2. **תוקף ביטוח רפואי (`check_insurance_valid_date`):** מונע הכנסת תאריכי פקיעת תוקף שגויים מהעבר הרחוק (לפני שנת 2000).
+3. **סוג קשר משפחתי (`check_relationship_type`):** מגביל את הערכים לערכים מוגדרים (כמו 'Parent', 'Spouse') כדי לשמור על אחידות.
+
+
+<img width="1230" height="326" alt="image" src="https://github.com/user-attachments/assets/a4b82b65-3baf-4986-b999-6b8024f23d4e" />
+
+
+
+
+
+
+
+
+
+
+

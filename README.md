@@ -1,95 +1,93 @@
-# 🏥 Hospital Management System -
+# 🏥 מערכת לניהול בית חולים -
 ---
-## Stage 1
+## שלב א'
 ---
-**Team Members:** Guila Czerniewicz (2045605), Braha Kalagi (325464238)
-**System Name:** Antigravity Hospital Suite  
-**Selected Module:** Patient Management & Medical Administration
+**חברות הצוות:** גילה צ'רנוביץ (2045605), ברכה קלעג׳י (325464238)  
+**שם המערכת:** Antigravity Hospital Suite  
+**מודול נבחר:** ניהול פציינטים ואדמיניסטרציה רפואית
 
 
----
-## 📋 Table of Contents
+## 📋 תוכן עניינים
 
-1. [Introduction](#1-introduction)
-2. [UI Prototypes (AI Generated)](#2-ui-prototypes-ai-generated)
-3. [Database Design & Diagrams](#3-database-design--diagrams)
-4. [Design Decisions & Architecture](#4-design-decisions--architecture)
-5. [Data Population Methods](#5-data-population-methods)
-6. [Backup and Restoration](#6-backup-and-restoration)
-7. [How to Run the Project](#7-how-to-run-the-project)
----
+1. [מבוא](#1-מבוא)
+2. [אבות-טיפוס של ממשק המשתמש (נוצר ע"י AI)](#2-אבות-טיפוס-של-ממשק-המשתמש-נוצר-ע-י-ai)
+3. [עיצוב בסיס הנתונים ודיאגרמות](#3-עיצוב-בסיס-הנתונים-ודיאגרמות)
+4. [החלטות עיצוב וארכיטקטורה](#4-החלטות-עיצוב-וארכיטקטורה)
+5. [שיטות לאכלוס נתונים](#5-שיטות-לאכלוס-נתונים)
+6. [גיבוי ושחזור](#6-גיבוי-ושחזור)
+7. [איך להריץ את הפרויקט](#7-איך-להריץ-את-הפרויקט)
 
-## 📖 1. Introduction
 
-### System Overview
-This system is strictly bounded to the **medical administration of a human hospital environment**. It is designed to manage the core entities involved in patient care, ensuring seamless tracking of medical history, insurance coverage, and hospital admissions. The system provides a centralized database to handle high-volume data (**20,000+ records**) while maintaining strict relational integrity.
+## 📖 1. מבוא
 
+### סקירת המערכת
+מערכת זו מוגבלת באופן בלעדי ל**ניהול הרפואי של סביבת בית חולים אנושי**. היא תוכננה לנהל את הישויות המרכזיות המעורבות בטיפול בחולים, תוך הבטחת מעקב רציף אחר היסטוריה רפואית, כיסוי ביטוחי ואשפוזים בבית החולים. המערכת מספקת בסיס נתונים מרכזי לטיפול בנפח נתונים גבוה (**מעל 20,000 רשומות**) תוך שמירה על שלמות קשרית (Relational Integrity) קפדנית.
 ---
 
-## ✨ Core Functionalities
+## ✨ יכולות ליבה
 
-* **👤 Patient Management:** Centralized registration of patients, including demographics, unique identification, and contact details.
-* **🏨 Admission Tracking:** Managing hospital stays, recording admission/discharge dates, and reasons for hospitalization with automated consistency checks.
-* **📂 Medical History & Diagnostics:** Persistent logging of pre-existing conditions and past diagnoses associated with specific patients.
-* **⚠️ Allergy & Risk Management:** Tracking patient sensitivities (Allergies) with severity levels to ensure clinical safety during treatment.
-* **📄 Insurance & Policy Administration:** Managing insurance provider details, policy numbers, and coverage expiration dates to facilitate billing administration.
+* **👤 ניהול פציינטים:** רישום מרכזי של חולים, כולל פרטים דמוגרפיים, זיהוי ייחודי ופרטי קשר.
+* **🏨 מעקב אשפוזים:** ניהול שהיות בבית החולים, תיעוד תאריכי קבלה/שחרור וסיבות אשפוז עם בדיקות תקינות אוטומטיות.
+* **📂 היסטוריה רפואית ואבחון:** רישום קבוע של מצבים רפואיים קיימים ואבחנות עבר המשויכות לחולים ספציפיים.
+* **⚠️ ניהול אלרגיות וסיכונים:** מעקב אחר רגישויות של חולים (אלרגיות) עם דרגות חומרה כדי להבטיח בטיחות קלינית במהלך הטיפול.
+* **📄 ניהול ביטוח ופוליסות:** ניהול פרטי ספקי ביטוח, מספרי פוליסה ותאריכי פקיעת תוקף כדי להקל על הניהול הכספי והגבייה.
 
-> **Note:** This module focuses on administrative and clinical data and does not handle external operations such as financial transactions, staff payroll, or pharmacy inventory management.
+> **הערה:** מודול זה מתמקד בנתונים אדמיניסטרטיביים וקליניים ואינו מטפל בפעולות חיצוניות כגון עסקאות פיננסיות, שכר עובדים או ניהול מלאי בית המרקחת.
 
----
-## 🎨 2. UI Prototypes (AI Generated)
-To visualize the end product, we used Google AI Studio in a Top-Down approach to generate the initial frontend screens. These mockups dictate the data we need to store and retrieve.
+
+## 🎨 2. אבות-טיפוס של ממשק המשתמש (נוצר ע"י AI)
+כדי להמחיש את המוצר הסופי, השתמשנו ב-Google AI Studio בגישת Top-Down ליצירת מסכי ה-Frontend הראשוניים. דגמים אלו (Mockups) מגדירים את הנתונים שעלינו לאחסן ולשלוף.
 
 <img width="1225" height="731" alt="image" src="https://github.com/user-attachments/assets/c477cc1d-0391-4424-9655-e4218f4b0ac0" />
->Patient List Page: A central dashboard that displays all registered patients in a searchable table with quick actions for viewing, editing, or deleting records.
+>דף רשימת פציינטים: לוח בקרה מרכזי המציג את כל החולים הרשומים בטבלה ניתנת לחיפוש, עם פעולות מהירות לצפייה, עריכה או מחיקת רשומות.
 
 <img width="1242" height="728" alt="image" src="https://github.com/user-attachments/assets/eec79d50-fc3c-4b42-8816-45badc89e0ee" />
->Add Patient Page: A comprehensive registration form used to capture a new patient's personal details, contact information, and residential address.
+>דף הוספת פציינט: טופס רישום מקיף המשמש לקליטת פרטיו האישיים של חולה חדש, פרטי קשר וכתובת מגורים.
 
 <img width="1240" height="737" alt="image" src="https://github.com/user-attachments/assets/428e559e-d74b-4108-9318-765bf5890b19" />
->Patient Details Page: An all-in-one profile view that summarizes a patient's identity, emergency contacts, insurance status, and recent medical history.
+>דף פרטי פציינט: תצוגת פרופיל אחודה המסכמת את זהות החולה, אנשי קשר לשעת חירום, סטטוס ביטוחי והיסטוריה רפואית אחרונה.
 
 <img width="1241" height="730" alt="image" src="https://github.com/user-attachments/assets/a0abe2c9-4031-4473-8fdb-f1941b4aca82" />
->Insurance Information Page: A dedicated management area for viewing, adding, and updating a patient's insurance providers, policy numbers, and coverage dates.
+>דף מידע ביטוחי: אזור ניהול ייעודי לצפייה, הוספה ועדכון של ספקי הביטוח של החולה, מספרי פוליסה ותאריכי כיסוי.
 
 <img width="1236" height="742" alt="image" src="https://github.com/user-attachments/assets/27c91a9b-1f7b-4750-9169-ac9c76e8dd52" />
->Medical Information Page: A detailed clinical record screen focused on tracking patient allergies, chronic conditions, and primary emergency contact details.
+>דף מידע רפואי: מסך תיק רפואי מפורט המתמקד במעקב אחר אלרגיות של חולים, מצבים כרוניים ופרטי איש קשר עיקרי לשעת חירום.
+
 
 ---
-## 📐 3. Database Design & Diagrams
+## 📐 3. עיצוב בסיס הנתונים ודיאגרמות
 
-Our database is designed to reflect the administrative and clinical realities of a modern hospital environment, following standard relational design principles. The schema is normalized to at least 3NF (Third Normal Form) to ensure data integrity, eliminate redundancy, and support high-volume transactions for thousands of patient records.
+בסיס הנתונים שלנו תוכנן כך שישקף את המציאות האדמיניסטרטיבית והקלינית של סביבת בית חולים מודרנית, תוך הקפדה על עקרונות עיצוב טבלאיים סטנדרטיים. הסכימה עברה נורמליזציה לרמה של לפחות 3NF (צורה נורמלית שלישית) כדי להבטיח את שלמות הנתונים, למנוע כפילויות ולתמוך בנפח עסקאות גבוה עבור אלפי רשומות חולים.
 
 ---
 
-## 🔗 Entity Relationship Diagram (ERD)
+## 🔗 דיאגרמת ישויות קשרים (ERD)
 <img width="4512" height="1902" alt="erdplus (8)" src="https://github.com/user-attachments/assets/47720a20-ad6e-4700-96d6-a4a8583fa5c3" />
 
 ---
 
-## 📊 Data Structure Diagram (DSD)
+## 📊 דיאגרמת מבנה נתונים (DSD)
 ---
 <img width="4512" height="1902" alt="erdplus (9)" src="https://github.com/user-attachments/assets/13a5dfc7-ff56-4272-b437-7eaf05a8dd88" />
 
 
 ---
 
-## 🏗️ 4. Design Decisions & Architecture
+## 🏗️ 4. החלטות עיצוב וארכיטקטורה
 
-> Our database is designed to reflect the administrative and clinical realities of a modern hospital environment, following standard relational design principles. The schema is **normalized to at least 3NF** (Third Normal Form) to ensure data integrity, eliminate redundancy, and support high-volume transactions for thousands of patient records.
+> בסיס הנתונים שלנו תוכנן כך שישקף את המציאות האדמיניסטרטיבית והקלינית של סביבת בית חולים מודרנית, תוך הקפדה על עקרונות עיצוב טבלאיים סטנדרטיים. הסכימה עברה **נורמליזציה לרמה של לפחות 3NF** כדי להבטיח את שלמות הנתונים, למנוע כפילויות ולתמוך בנפח עסקאות גבוה עבור אלפי רשומות חולים.
 
 
 
-### Key Architectural Decisions:
+### החלטות ארכיטקטוניות מרכזיות:
 
-* **Normalization (3NF):** We utilized dedicated relational structures to resolve complex dependencies. For instance, separate tables for `Allergy` and `Medical_History` are linked to the `Patient` entity via Foreign Keys. This structure prevents data duplication and update anomalies, ensuring that a single patient can have multiple clinical records without redundant demographic data.
+* **נורמליזציה (3NF):** השתמשנו במבנים טבלאיים ייעודיים לפתרון תלויות מורכבות. לדוגמה, טבלאות נפרדות עבור `Allergy` (אלרגיות) ו-`Medical_History` (היסטוריה רפואית) מקושרות לישות ה-`Patient` (פציינט) באמצעות מפתחות זרים. מבנה זה מונע כפילות נתונים ואנומליות בעדכון, ומבטיח שחולה בודד יוכל להחזיק במספר רב של רשומות קליניות ללא צורך בכפילות של פרטיו הדמוגרפיים.
 
-* **Data Integrity (Constraints):** We implemented strict relational constraints to guarantee "Clean Data":
-    * **NOT NULL:** Applied to critical fields like `last_name`, `admission_date`, and `policy_number`.
-    * **UNIQUE:** Enforced on sensitive fields such as `email` and insurance `policy_number` to prevent identity or billing conflicts.
-    * **Check Constraints:** Custom logic (e.g., `check_dates`) ensures that a `discharge_date` cannot occur before an `admission_date`.
-    * **Referential Integrity:** Cascading deletes (`ON DELETE CASCADE`) are used so that if a patient record is removed, all associated admissions and histories are cleaned up, preventing "orphaned" data.
-
+* **שלמות נתונים (אילוצים):** הטמענו אילוצי קשרים קפדניים כדי להבטיח "נתונים נקיים":
+    * **NOT NULL:** הוחל על שדות קריטיים כמו `last_name`, `admission_date` ו-`policy_number`.
+    * **UNIQUE:** הוחל על שדות רגישים כגון `email` ומספר פוליסה (`policy_number`) כדי למנוע כפילות בזהויות או בחיובים.
+    * **Check Constraints:** לוגיקה מותאמת אישית (לדוגמה: `check_dates`) מבטיחה שתאריך שחרור (`discharge_date`) לא יכול להתרחש לפני תאריך קבלה (`admission_date`).
+    * **שלמות רפרנציאלית:** השתמשנו במחיקה משורשרת (`ON DELETE CASCADE`) כך שבמידה ורשומת חולה נמחקת, כל האשפוזים וההיסטוריה הרפואית המשויכים אליה ינוקו אוטומטית, מה שמונע היווצרות של נתונים "יתומים".
 
 
 * **Optimized Data Types:** Appropriate PostgreSQL types were selected for precision and performance:
@@ -101,116 +99,116 @@ Our database is designed to reflect the administrative and clinical realities of
 
 ---
 
-## 📥 5. Data Population Methods
+## 📥 5. שיטות לאכלוס נתונים
 
-To ensure a robust testing environment and simulate a real-world hospital load, the database was populated with realistic mock data using three distinct strategies. We successfully met the requirement of generating at least **500 records** for standard clinical tables and over **20,000 records** for high-volume entities like `Patient` and `Admission`.
+כדי להבטיח סביבת בדיקות חסונה ולדמות עומס של בית חולים בעולם האמיתי, בסיס הנתונים אוכלס בנתוני דמה (Mock Data) מציאותיים באמצעות שלוש אסטרטגיות שונות. עמדנו בהצלחה בדרישה לייצור של לפחות **500 רשומות** עבור טבלאות קליניות סטנדרטיות ומעל ל-**20,000 רשומות** עבור ישויות בעלות נפח גבוה כמו `Patient` (פציינט) ו-`Admission` (אשפוז).
 
-### Method 1: Database Scripting & SQL Logic (`generate_series`)
+### שיטה 1: סקריפטים של בסיס נתונים ולוגיקת SQL (שימוש ב-`generate_series`)
 
-We utilized advanced PostgreSQL scripting—leveraging the `generate_series()` function combined with `ARRAY` constants and `random()` logic—to programmatically generate large-scale datasets directly within the SQL engine. 
-
+השתמשנו בסקריפטים מתקדמים של PostgreSQL – תוך ניצול הפונקציה `generate_series()` בשילוב עם קבועי `ARRAY` ולוגיקת `random()` – כדי לייצר באופן תכנותי סטים של נתונים בקנה מידה גדול ישירות בתוך מנוע ה-SQL.
 <img width="1059" height="459" alt="image" src="https://github.com/user-attachments/assets/c3ce6b01-2506-4bbc-866f-37c19a9825b2" />
 
 
 ---
-### Method 2: External Data Generators (Mockaroo)
+### שיטה 2: מחוללי נתונים חיצוניים (Mockaroo)
 
-For specialized clinical data requiring realistic medical terminology (e.g., `allergy_name`, `severity` levels, and clinical notes), we utilized **Mockaroo** to generate high-fidelity test data. 
+עבור נתונים קליניים ייעודיים הדורשים טרמינולוגיה רפואית מציאותית (למשל: `allergy_name`, רמות חומרה `severity` והערות קליניות), השתמשנו ב-**Mockaroo** כדי לייצר נתוני בדיקה ברמת דיוק גבוהה.
 
-This approach allowed us to:
-* **Simulate Clinical Diversity:** Populating the `Allergy` table with 500+ records of common allergens (e.g., Penicillin, Latex, Peanuts) and varying severity levels from 'Low' to 'Life-threatening'.
-* **Consistent Formatting:** Exporting the data directly as **SQL INSERT statements** to ensure seamless integration with our PostgreSQL schema and maintaining strict relational mapping to our existing `patient_id` values.
+גישה זו אפשרה לנו:
+* **לדמות גיוון קליני:** אכלוס טבלת ה-`Allergy` (אלרגיות) עם יותר מ-500 רשומות של אלרגנים נפוצים (כגון פניצילין, לטקס, בוטנים) ורמות חומרה משתנות מ-'Low' ועד 'Life-threatening'.
+* **פורמט אחיד:** ייצוא הנתונים ישירות כ**שאילתות SQL INSERT** כדי להבטיח אינטגרציה חלקה עם סכימת ה-PostgreSQL שלנו, תוך שמירה על מיפוי קשרים קפדני לערכי ה-`patient_id` הקיימים.
 
-This method proved highly efficient for meeting the **20,000+ row requirement** for the `Admission` table. By using this approach, we were able to:
-* **Maintain Logical Consistency:** Ensuring that every admission record is linked to a valid `patient_id`.
-* **Enforce Temporal Logic:** Using interval arithmetic (`start_date + random interval`) to guarantee that discharge dates always occur after admission dates, thereby respecting our database constraints.
+שיטה זו הוכחה כיעילה ביותר לעמידה בדרישת ה-**20,000+ שורות** עבור טבלת ה-`Admission` (אשפוזים). באמצעות שימוש בגישה זו, יכולנו:
+* **לשמור על עקביות לוגית:** הבטחה שכל רשומת אשפוז מקושרת ל-`patient_id` תקף.
+* **אכיפת לוגיקה זמנית:** שימוש באריתמטיקה של טווחי זמן (`start_date + random interval`) כדי להבטיח שתאריכי השחרור תמיד יתרחשו לאחר תאריכי הקבלה, ובכך לכבד את האילוצים שהגדרנו בבסיס הנתונים.
 
 <img width="1751" height="881" alt="image" src="https://github.com/user-attachments/assets/15cd4c78-d4dc-4d04-897c-f68e2eff7b6e" />
 <img width="1640" height="740" alt="Capture d&#39;écran 2026-03-19 142028" src="https://github.com/user-attachments/assets/6b27b15d-a164-4cb8-bd0e-5be202a4ccf4" />
 
-### Method 3: Administrative Data (CSV Import)
+### שיטה 3: נתונים אדמיניסטרטיביים (ייבוא מקובץ CSV)
 
-For the **Insurance** table, we utilized **Mockaroo** to generate a realistic dataset of 550+ records.
+עבור טבלת ה-**Insurance** (ביטוח), השתמשנו ב-**Mockaroo** כדי לייצר סט נתונים מציאותי של יותר מ-550 רשומות.
 
-* **Strategy:** Generated unique `policy_number` values to satisfy the database's `UNIQUE` constraint and ensure zero data conflicts during ingestion.
-* **Process:** Imported via pgAdmin 4 using the **Import/Export Tool**.
-* **Key Detail:** We enabled the **Header** option and excluded the `insurance_id` (Identity) column to allow PostgreSQL to handle primary key generation automatically.
+* **אסטרטגיה:** יצרנו ערכי `policy_number` (מספר פוליסה) ייחודיים כדי לעמוד באילוץ ה-`UNIQUE` של בסיס הנתונים ולהבטיח אפס התנגשויות נתונים בזמן הקליטה.
+* **תהליך:** הייבוא בוצע דרך pgAdmin 4 באמצעות כלי ה-**Import/Export Tool**.
+* **פרט מפתח:** הפעלנו את אפשרות ה-**Header** (שורת כותרת) והחרגנו את עמודת ה-`insurance_id` (עמודת Identity) כדי לאפשר ל-PostgreSQL לנהל את יצירת המפתחות הראשיים באופן אוטומטי.
 
 <img width="1882" height="923" alt="image" src="https://github.com/user-attachments/assets/dd319b79-0346-43c3-af6a-d75545f77f68" />
 
 
 ---
-## 🔄 6. Backup and Restoration
+## 🔄 6. גיבוי ושחזור
 ---
 
-### 1. Backup Creation
-* **Filename:** `backup_19_03_2026.backup`
-* **Format:** PostgreSQL Custom Format (compressed).
-* **Method:** Generated via **pgAdmin 4 Backup tool** and exported using the **Storage Manager**.
-* **Content:** Complete database state, including schemas, relational constraints, and 20,500+ patient records.
+### 1. יצירת גיבוי
+* **שם הקובץ:** `backup_19_03_2026.backup`
+* **פורמט:** PostgreSQL Custom Format (דחוס).
+* **שיטה:** נוצר באמצעות כלי ה-**Backup של pgAdmin 4** ויוצא באמצעות ה-**Storage Manager**.
+* **תוכן:** מצב מלא של בסיס הנתונים, כולל סכימות, אילוצי קשרים (relational constraints), ומעל ל-20,500 רשומות חולים.
 
-### 2. Portability & Validation
-To verify the backup's integrity, a restoration test was conducted:
-1. Created a clean database instance (`hospital_test_db`).
-2. Performed a **Restore** operation using the generated `.backup` file.
-3. **Verification:** Executed `SELECT count(*) FROM patient;` to confirm all 20,500 records were successfully recovered.
+### 2. ניידות ואימות (Validation)
+כדי לוודא את תקינות הגיבוי, בוצע מבחן שחזור:
+1. נוצר מופע חדש ונקי של בסיס נתונים (`hospital_test_db`).
+2. בוצעה פעולת **Restore** (שחזור) באמצעות קובץ ה-`.backup` שנוצר.
+3. **אימות:** הורצה השאילתה `;SELECT count(*) FROM patient` כדי לאשר שכל 20,500 הרשומות שוחזרו בהצלחה.
 
-> **Result:** The backup is fully functional and ready to be deployed on any PostgreSQL 16+ instance.
-
+> **תוצאה:** הגיבוי פונקציונלי לחלוטין ומוכן לפריסה על כל מופע של PostgreSQL מגרסה 16 ומעלה.
 -----
 
-## 🚀 7. How to Run the Project
+## 🚀 7. איך להריץ את הפרויקט
 
-### Prerequisites
-* **Docker Desktop** installed and running.
+### דרישות קדם
+* **Docker Desktop** מותקן ופועל.
 
-### Step 1: Launch the Environment
-1. Open a terminal in the project folder and run:
-   ```bash
+### שלב 1: הפעלת הסביבה
+1. פתחי טרמינל בתיקיית הפרויקט והריצי:
+
+
    docker-compose up -d
 
-### Step 2: Connect to pgAdmin
-1. Open your browser and go to: `http://localhost:5050`
-2. **Login with:**
-   * **Email:** `-`
-   * **Password:** `-` 
-3. **Add a new server connection:**
+
+### שלב 2: התחברות ל-pgAdmin
+1. פתחי את הדפדפן וגשי לכתובת: `http://localhost:5050`
+2. **התחברות (Login):**
+   * **אימייל:** `-`
+   * **סיסמה:** `-` 
+3. **הוספת חיבור לשרת חדש (Add New Server):**
    * **Name:** `Antigravity-DB`
    * **Host:** `db`
    * **Port:** `5432`
    * **Username:** `-`
    * **Password:** `-`
    * **Maintenance database:** `-`
-   **All the elements to fill are defined in ".env"**
+   **כל הפרטים למילוי מוגדרים בקובץ ".env"**
 
-### Step 3: Import Insurance Data (CSV)
-1. In the pgAdmin sidebar, navigate to: 
-   **Servers** → **Antigravity-DB** → **Databases** → **basnat** → **Schemas** → **public** → **Tables** → **insurance**.
-2. Right-click on the **insurance** table → **Import/Export Data...**
-3. **Configure the import:**
-   * **Import/Export:** `Import`
-   * **Filename:** Select `db-files/insurance.csv`
+### שלב 3: ייבוא נתוני ביטוח (CSV)
+1. בתפריט הצד של pgAdmin, גשי לכתובת: 
+   **Servers** ← **Antigravity-DB** ← **Databases** ← **basnat** ← **Schemas** ← **public** ← **Tables** ← **insurance**.
+2. קליק ימני על טבלת ה-**insurance** ← בחרי ב-**Import/Export Data...**
+3. **הגדרת הייבוא:**
+   * **Import/Export:** בחרי `Import`
+   * **Filename:** בחרי את הקובץ `db-files/insurance.csv`
    * **Format:** `CSV`
    * **Header:** `Yes`
    * **Delimiter:** `,`
-4. **Important:** In the **Columns** tab, **uncheck** `insurance_id`.
-5. Click **OK** to import ~550 insurance records.
+4. **חשוב:** בלשונית **Columns**, הסירי את הסימון (uncheck) מהעמודה `insurance_id`.
+5. לחצי על **OK** לייבוא כ-550 רשומות ביטוח.
 
-### Step 4: Run Data Scripts
-1. In pgAdmin, open the **Query Tool** (Tools → Query Tool).
-2. Click the **Open File** (📂) button and run these scripts in order:
-   * `db-files/03-insert-table.sql` (Inserts 20,500+ Patients and Admissions).
-   * `db-files/04-mockaroo-allergy.sql` (Inserts allergy data).
-3. Click **Execute** (▶) or press **F5** for each.
+### שלב 4: הרצת סקריפטים של נתונים
+1. ב-pgAdmin, פתחי את כלי השאילתות (**Query Tool**) דרך Tools ← Query Tool.
+2. לחצי על כפתור פתיחת הקבצים (📂) והריצי את הסקריפטים הבאים לפי הסדר:
+   * `db-files/03-insert-table.sql` (מכניס מעל 20,500 פציינטים ואשפוזים).
+   * `db-files/04-mockaroo-allergy.sql` (מכניס נתוני אלרגיות).
+3. לחצי על **Execute** (▶) או על **F5** עבור כל אחד מהם.
 
-### Step 5: Verify the Data
-1. Open the **Query Tool** again.
-2. Open and run the file: `db-files/06-select-all.sql`.
-3. Verify that all tables are populated correctly.
+### שלב 5: אימות הנתונים
+1. פתחי שוב את ה-**Query Tool**.
+2. פתחי והריצי את הקובץ: `db-files/06-select-all.sql`.
+3. ודאי שכל הטבלאות מאוכלסות בצורה תקינה.
 
-## Summary of Data Sources
+## סיכום מקורות הנתונים
 <img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/5a96aef7-8e05-4ec8-8859-3d3728dea295" />
 
-## 🛠️ Tech Stack & Population Methods
+## 🛠️ סטאק טכנולוגי ושיטות אכלוס
 * **Database:** PostgreSQL (Dockerized)
 * **GUI:** pgAdmin 4
