@@ -25,6 +25,7 @@ SET search_path TO patients, public;
 ```
 
 -- 1. טבלה לארכוב פוליסות ביטוח פגות תוקף (עבור פרוצדורה 2)
+```sql
 CREATE TABLE insurance_archive (
     archive_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     insurance_id INT,
@@ -37,6 +38,7 @@ CREATE TABLE insurance_archive (
 ```
 
 -- 2. טבלת לוגים לתיעוד משך אשפוז של מטופלים (עבור טריגר 1)
+```sql
 CREATE TABLE admission_audit_logs (
     log_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     admission_id INT,
@@ -79,8 +81,10 @@ BEGIN
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Patient with ID % does not exist.', p_patient_id;
     END IF;
+   
 
     -- שליפת כמות האבחנות הרפואיות מההיסטוריה
+    
     SELECT COUNT(*) INTO v_history_count FROM medical_history WHERE patient_id = p_patient_id;
     v_risk_score := v_risk_score + (v_history_count * 5);
 
@@ -118,6 +122,7 @@ EXCEPTION
         RAISE NOTICE 'Error in patient risk evaluation: %', SQLERRM;
         RETURN 'Evaluation Failed';
 END;
+```
 $$ LANGUAGE plpgsql;
 
 <img width="1127" height="825" alt="Capture d&#39;écran 2026-06-14 132223" src="https://github.com/user-attachments/assets/4b1f9b47-4126-48e5-afea-f3806976aa1f" />
@@ -149,6 +154,7 @@ BEGIN
         
     RETURN v_admission_cursor;
 END;
+```
 $$ LANGUAGE plpgsql;
 
 <img width="1127" height="846" alt="Capture d&#39;écran 2026-06-14 132303" src="https://github.com/user-attachments/assets/dd1bd9ed-27db-4a58-b778-c2a0c88e4284" />
@@ -201,6 +207,7 @@ EXCEPTION
         RAISE NOTICE 'Transaction failed. Error: %', SQLERRM;
         RAISE;
 END;
+```
 $$ LANGUAGE plpgsql;
 <img width="1113" height="737" alt="Capture d&#39;écran 2026-06-14 132348" src="https://github.com/user-attachments/assets/5c34df49-c530-43fb-ae73-4d88b9e4018f" />
 
@@ -240,6 +247,7 @@ EXCEPTION
         RAISE NOTICE 'Archiving failed: %', SQLERRM;
         RAISE;
 END;
+```
 $$ LANGUAGE plpgsql;
 <img width="1132" height="881" alt="Capture d&#39;écran 2026-06-14 132438" src="https://github.com/user-attachments/assets/e9dd8b70-af57-451c-90ae-f4c60b98b83b" />
 
@@ -274,6 +282,7 @@ BEGIN
 
     RETURN NEW;
 END;
+```
 $$ LANGUAGE plpgsql;
 
 -- הגדרת הטריגר על הטבלה בזמן UPDATE
@@ -311,6 +320,7 @@ BEGIN
 
     RETURN NEW;
 END;
+```
 $$ LANGUAGE plpgsql;
 
 -- הגדרת הטריגר על הטבלה בזמן INSERT
