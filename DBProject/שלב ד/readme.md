@@ -22,6 +22,7 @@
 ```sql
 -- הגדרת נתיב החיפוש לסכמה הרלוונטית
 SET search_path TO patients, public;
+```
 
 -- 1. טבלה לארכוב פוליסות ביטוח פגות תוקף (עבור פרוצדורה 2)
 CREATE TABLE insurance_archive (
@@ -33,6 +34,7 @@ CREATE TABLE insurance_archive (
     expiration_date DATE,
     archived_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+```
 
 -- 2. טבלת לוגים לתיעוד משך אשפוז של מטופלים (עבור טריגר 1)
 CREATE TABLE admission_audit_logs (
