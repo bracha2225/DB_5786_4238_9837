@@ -44,6 +44,7 @@ CREATE TABLE admission_audit_logs (
     total_stay_hours NUMERIC,
     logged_at TIMESTAMPTZ
 );
+```
 
 <img width="1100" height="872" alt="Capture d&#39;écran 2026-06-14 131513" src="https://github.com/user-attachments/assets/4ff59508-5018-4bf9-a5fc-f0b4d90c9a4d" />
 
