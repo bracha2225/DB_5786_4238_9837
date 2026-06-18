@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מערכת ניהול רפואית – מרכז רפואי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg: #090d16;
+  --surface: #141c2e;
+  --surface2: rgba(20,28,46,0.85);
+  --sidebar-bg: #0d1526;
+  --border: rgba(255,255,255,0.08);
+  --primary: #3b82f6;
+  --primary-grad: linear-gradient(135deg,#3b82f6,#6366f1);
+  --accent: #a855f7;
+  --accent-grad: linear-gradient(135deg,#a855f7,#ec4899);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --font: 'Assistant', sans-serif;
+  --radius: 14px;
+  --trans: all .25s ease;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+
+/* ── Layout ── */
+.layout{display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{
+  width:250px;min-width:250px;background:var(--sidebar-bg);
+  border-left:1px solid var(--border);display:flex;flex-direction:column;
+  padding:24px 14px;position:fixed;height:100vh;right:0;top:0;z-index:200;
+}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:32px;padding:0 6px}
+.logo-icon{font-size:26px;background:var(--primary-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo h2{font-size:18px;font-weight:700;background:linear-gradient(120deg,#fff,var(--muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav{display:flex;flex-direction:column;gap:4px;flex:1}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;
+  color:var(--muted);text-decoration:none;border-radius:10px;
+  font-weight:600;font-size:15px;transition:var(--trans);cursor:pointer;border:none;background:none;width:100%;text-align:right;
+}
+.nav-item i{font-size:16px;width:20px;text-align:center}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.nav-item.active{background:var(--primary-grad);color:#fff;box-shadow:0 4px 14px rgba(59,130,246,.35)}
+.sidebar-foot{padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.db-status{display:flex;align-items:center;gap:6px;margin-top:4px;color:var(--success);font-weight:600}
+.db-dot{width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+
+/* ── Main ── */
+.main{flex:1;margin-right:250px;padding:28px;display:flex;flex-direction:column;gap:24px;min-width:0}
+
+/* ── Topbar ── */
+.topbar{display:flex;justify-content:space-between;align-items:center;
+  background:var(--surface2);border:1px solid var(--border);padding:12px 22px;
+  border-radius:var(--radius);backdrop-filter:blur(10px)}
+.search-wrap{position:relative;width:280px}
+.search-wrap i{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px}
+#global-search{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  color:var(--text);padding:9px 36px 9px 12px;border-radius:8px;font-family:var(--font);font-size:14px;outline:none;transition:var(--trans)}
+#global-search:focus{border-color:var(--primary);background:rgba(59,130,246,.08)}
+.user-info{display:flex;align-items:center;gap:10px}
+.user-role{font-size:13px;color:var(--muted)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--primary-grad);display:flex;align-items:center;justify-content:center;font-size:14px}
+
+/* ── Toast ── */
+#toast-wrap{position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{display:flex;align-items:center;gap:10px;padding:12px 18px;
+  border-radius:10px;background:var(--surface);border:1px solid var(--border);
+  border-right:3px solid var(--success);font-size:14px;font-weight:600;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);animation:slideUp .3s ease;min-width:260px}
+.toast.err{border-right-color:var(--danger);color:#fca5a5}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Tab Pane ── */
+.tab-pane{display:none;animation:fadeIn .25s ease}
+.tab-pane.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Cards ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+
+/* ── Dashboard ── */
+.welcome{background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(99,102,241,.1));
+  border:1px solid rgba(59,130,246,.2);border-radius:var(--radius);padding:28px 32px;
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.welcome h1{font-size:22px;font-weight:700;margin-bottom:6px}
+.welcome p{color:var(--muted);font-size:14px}
+.welcome-icon{font-size:48px;color:rgba(59,130,246,.3)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;display:flex;align-items:center;gap:16px;transition:var(--trans)}
+.stat-card:hover{border-color:rgba(59,130,246,.3);transform:translateY(-2px)}
+.stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.si-blue{background:rgba(59,130,246,.15);color:var(--primary)}
+.si-green{background:rgba(16,185,129,.15);color:var(--success)}
+.si-purple{background:rgba(168,85,247,.15);color:var(--accent)}
+.si-amber{background:rgba(245,158,11,.15);color:var(--warning)}
+.stat-val{font-size:28px;font-weight:700;line-height:1}
+.stat-lbl{font-size:12px;color:var(--muted);margin-top:4px}
+.quick-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* ── Section Header ── */
+.sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.sec-header h2{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:9px;
+  font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:var(--trans)}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--primary-grad);color:#fff;box-shadow:0 3px 10px rgba(59,130,246,.3)}
+.btn-secondary{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--border)}
+.btn-accent{background:var(--accent-grad);color:#fff;box-shadow:0 3px 10px rgba(168,85,247,.3)}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3)}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:7px}
+
+/* ── Table ── */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;background:var(--surface)}
+thead{background:rgba(0,0,0,.25)}
+th{padding:12px 14px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;text-align:right}
+td{padding:12px 14px;font-size:14px;border-bottom:1px solid var(--border);vertical-align:middle;text-align:right}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.025)}
+.actions-cell{white-space:nowrap;display:flex;gap:6px}
+code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:12px}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-active{background:rgba(16,185,129,.15);color:var(--success);border:1px solid rgba(16,185,129,.2)}
+.badge-inactive{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.2)}
+.badge-leave{background:rgba(245,158,11,.15);color:var(--warning);border:1px solid rgba(245,158,11,.2)}
+.badge-low{background:rgba(16,185,129,.15);color:var(--success)}
+.badge-moderate{background:rgba(245,158,11,.15);color:var(--warning)}
+.badge-high{background:rgba(239,68,68,.15);color:var(--danger)}
+.badge-lt{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(168,85,247,.2));color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+
+/* ── Modal ── */
+.backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:500}
+.modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:620px;max-width:92vw;max-height:90vh;overflow-y:auto;
+  background:var(--surface);border:1px solid rgba(255,255,255,.12);border-radius:18px;
+  padding:28px;z-index:600;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.modal-hdr h3{font-size:18px;font-weight:700}
+.close-btn{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;padding:4px}
+.close-btn:hover{color:var(--text)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-group label{font-size:13px;font-weight:600;color:var(--muted)}
+.form-control{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);
+  padding:10px 12px;border-radius:8px;font-family:var(--font);font-size:14px;outline:none;transition:var(--trans);width:100%}
+.form-control:focus{border-color:var(--primary);background:rgba(59,130,246,.07)}
+.form-control option{background:#1e2a42;color:var(--text)}
+textarea.form-control{resize:vertical;min-height:80px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* ── Queries tab ── */
+.queries-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.run-card{display:flex;flex-direction:column;gap:12px}
+.run-card h3{font-size:15px;font-weight:700}
+.run-card p{font-size:13px;color:var(--muted);line-height:1.5}
+.inline-form{display:flex;gap:8px;align-items:center}
+.inline-form .form-control{flex:1}
+.query-out{margin-top:6px;font-size:13px;min-height:30px}
+.res-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+.res-table th{background:rgba(0,0,0,.3);color:var(--muted);padding:7px 10px;text-align:right;font-weight:700}
+.res-table td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);text-align:right}
+
+/* ── Animations ── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon"><i class="fa-solid fa-square-h"></i></div>
+      <h2>מרכז רפואי</h2>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-tab="dashboard"><i class="fa-solid fa-chart-pie"></i> לוח בקרה</button>
+      <button class="nav-item" data-tab="patients"><i class="fa-solid fa-user-injured"></i> מטופלים</button>
+      <button class="nav-item" data-tab="staff"><i class="fa-solid fa-user-doctor"></i> צוות רפואי</button>
+      <button class="nav-item" data-tab="admissions"><i class="fa-solid fa-hospital-user"></i> אשפוזים</button>
+      <button class="nav-item" data-tab="allergies"><i class="fa-solid fa-hand-dots"></i> אלרגיות</button>
+      <button class="nav-item" data-tab="history"><i class="fa-solid fa-file-medical"></i> היסטוריה רפואית</button>
+      <button class="nav-item" data-tab="insurance"><i class="fa-solid fa-id-card-clip"></i> ביטוחים</button>
+      <button class="nav-item" data-tab="contacts"><i class="fa-solid fa-address-book"></i> אנשי קשר</button>
+      <button class="nav-item" data-tab="queries"><i class="fa-solid fa-terminal"></i> שאילתות ותוכניות</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div>מערכת ניהול – שלב ה'</div>
+      <div class="db-status"><span class="db-dot"></span> מחובר למסד הנתונים</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="global-search" placeholder="חיפוש...">
+      </div>
+      <div class="user-info">
+        <span class="user-role">מנהל מערכת</span>
+        <div class="avatar"><i class="fa-solid fa-user-shield"></i></div>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section id="tab-dashboard" class="tab-pane active">
+      <div class="welcome">
+        <div>
+          <h1>ברוכים הבאים למערכת הניהול הרפואית המשולבת</h1>
+          <p>נהלו מטופלים, צוות, אשפוזים, ביטוחים ומעקב רפואי בזמן אמת.</p>
+        </div>
+        <div class="welcome-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon si-blue"><i class="fa-solid fa-users"></i></div>
+          <div><div class="stat-val" id="st-patients">…</div><div class="stat-lbl">סה"כ מטופלים</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-green"><i class="fa-solid fa-bed-pulse"></i></div>
+          <div><div class="stat-val" id="st-admissions">…</div><div class="stat-lbl">אשפוזים פעילים</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-purple"><i class="fa-solid fa-user-doctor"></i></div>
+          <div><div class="stat-val" id="st-staff">…</div><div class="stat-lbl">סה"כ צוות</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-amber"><i class="fa-solid fa-circle-check"></i></div>
+          <div><div class="stat-val" id="st-active-staff">…</div><div class="stat-lbl">צוות פעיל</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:12px"><i class="fa-solid fa-rocket" style="margin-left:8px;color:var(--primary)"></i>קישורים מהירים</h3>
+        <div class="quick-links">
+          <button class="btn btn-primary" onclick="goTab('patients')"><i class="fa-solid fa-users"></i> מטופלים</button>
+          <button class="btn btn-secondary" onclick="goTab('admissions')"><i class="fa-solid fa-hospital-user"></i> אשפוז חדש</button>
+          <button class="btn btn-accent" onclick="goTab('queries')"><i class="fa-solid fa-bolt"></i> הרצת שאילתות</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Patients -->
+    <section id="tab-patients" class="tab-pane">
+      <div class="sec-header">
+        <h2><i class="fa-solid fa-user-injured"></i> ניהול מטופלים</h2>
+        <button class="btn btn-primary" onclick="openAdd('patient')"><i class="fa-solid fa-plus"></i> מטופל חדש</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-patients">
+          <thead><tr><th>מזהה</th><th>שם פרטי</th><th>שם משפחה</th><th>תאריך לידה</th><th>מגדר</th><th>טלפון</th><th>אימייל</th><th>רופא אחראי</th><th>פעולות</th></tr></thead>
+          <tbody><tr><td colspan="9" style="text-align:center;padding:30px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> טוען נתונים...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Staff -->
+    <section id="tab-staff" class="tab-pane">
+      <div class="sec-header">
+        <h2><i class="fa-solid fa-user-doctor"></i> ניהול צוות רפואי</h2>
+        <button class="btn btn-primary" onclick="openAdd('staff')"><i class="fa-solid fa-plus"></i> איש סגל חדש</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-staff">
+          <thead><tr><th>מזהה</th><th>שם פרטי</th><th>שם משפחה</th><th>ת"ז</th><th>טלפון</th><th>אימייל</th><th>סטטוס</th><th>תאריך העסקה</th><th>מחלקה</th><th>תפקיד</th><th>פעולות</th></tr></thead>
+          <tbody><tr><td colspan="11" style="text-align:center;padding:30px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> טוען נתונים...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Admissions -->
+    <section id="tab-admissions" class="tab-pane">
+      <div class="sec-header">
+        <h2><i class="fa-solid fa-hospital-user"></i> ניהול אשפוזים</h2>
+        <button class="btn btn-primary" onclick="openAdd('admission')"><i class="fa-solid fa-plus"></i> רישום אשפוז</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-admissions">
+          <thead><tr><th>מזהה</th><th>שם מטופל</th><th>תאריך כניסה</th><th>תאריך שחרור</th><th>סיבה</th><th>פעולות</th></tr></thead>
+          <tbody><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> טוען נתונים...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Allergies -->
+    <section id="tab-allergies" class="tab-pane">
+      <div class="sec-header">
+        <h2><i class="fa-solid fa-hand-dots"></i> מעקב אלרגיות</h2>
+        <button class="btn btn-primary" onclick="openAdd('allergy')"><i class="fa-solid fa-plus"></i> תיעוד אלרגיה</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-allergies">
+          <thead><tr><th>מזהה</th><th>שם מטופל</th><th>שם האלרגיה</th><th>חומרה</th><th>הערות</th><th>פעולות</th></tr></thead>
+          <tbody><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> טוען נתונים...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section id="tab-history" class="tab-pane">
+      <div class="sec-header">
+        <h2><i class="fa-solid fa-file-medical"></i> היסטוריה רפואית</h2>
+        <button class="btn btn-primary" onclick="openAdd('history')"><i class="fa-solid fa-plus"></i> תיעוד רפואי</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-history">
+          <thead><tr><th>מזהה</th><th>שם מטופל</th><th>אבחנה</th><th>תאריך אבחון</th><th>הערות</th><th>פעולות</th></tr></thead>
+          <tbody><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> טוען נתונים...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Insurance -->
+    <section id="tab-insurance" class="tab-pane">
+      <div class="sec-header">
+        <h2><i class="fa-solid fa-id-card-clip"></i> פוליסות ביטוח</h2>
+        <button class="btn btn-primary" onclick="openAdd('insurance')"><i class="fa-solid fa-plus"></i> פוליסה חדשה</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-insurance">
+          <thead><tr><th>מזהה</th><th>שם מטופל</th><th>חברת ביטוח</th><th>מספר פוליסה</th><th>סוג כיסוי</th><th>תאריך תפוגה</th><th>פעולות</th></tr></thead>
+          <tbody><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> טוען נתונים...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Contacts -->
+    <section id="tab-contacts" class="tab-pane">
+      <div class="sec-header">
+        <h2><i class="fa-solid fa-address-book"></i> אנשי קשר לשעת חירום</h2>
+        <button class="btn btn-primary" onclick="openAdd('contact')"><i class="fa-solid fa-plus"></i> איש קשר חדש</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tbl-contacts">
+          <thead><tr><th>מזהה</th><th>שם מטופל</th><th>שם איש קשר</th><th>קרבה</th><th>טלפון</th><th>פעולות</th></tr></thead>
+          <tbody><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> טוען נתונים...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Queries -->
+    <section id="tab-queries" class="tab-pane">
+      <div class="sec-header"><h2><i class="fa-solid fa-terminal"></i> שאילתות ותוכניות</h2></div>
+      <div class="queries-grid">
+        <div class="card run-card">
+          <h3>שאילתה 1 – מטופלים בסיכון גבוה</h3>
+          <p>מטופלים עם אלרגיה מסכנת חיים וכמות אשפוזיהם.</p>
+          <button class="btn btn-accent" onclick="runQuery('query1')"><i class="fa-solid fa-play"></i> הרץ שאילתה</button>
+          <div class="query-out" id="out-query1"></div>
+        </div>
+        <div class="card run-card">
+          <h3>שאילתה 2 – אנשי קשר לאשפוזים פעילים</h3>
+          <p>אנשי קשר לחירום של מטופלים שמאושפזים כרגע.</p>
+          <button class="btn btn-accent" onclick="runQuery('query5')"><i class="fa-solid fa-play"></i> הרץ שאילתה</button>
+          <div class="query-out" id="out-query5"></div>
+        </div>
+        <div class="card run-card">
+          <h3>פונקציה – הערכת סיכון רפואי (שלב ד')</h3>
+          <p>מחשבת רמת סיכון למטופל לפי אלרגיות ואשפוזים.</p>
+          <div class="inline-form">
+            <select id="risk-sel" class="form-control"><option value="">-- בחר מטופל --</option></select>
+            <button class="btn btn-accent" onclick="runRisk()"><i class="fa-solid fa-gears"></i> הערך</button>
+          </div>
+          <div class="query-out" id="out-risk"></div>
+        </div>
+        <div class="card run-card">
+          <h3>פרוצדורה – שחרור המוני (שלב ד')</h3>
+          <p>משחרר מטופלים שסיבת אשפוזם מכילה מילת מפתח.</p>
+          <div class="inline-form">
+            <input type="text" id="discharge-kw" class="form-control" placeholder="מילת מפתח, למשל: Flu">
+            <button class="btn btn-accent" onclick="runDischarge()"><i class="fa-solid fa-house-medical-flag"></i> בצע</button>
+          </div>
+          <div class="query-out" id="out-discharge"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Toast container -->
+<div id="toast-wrap"></div>
+
+<!-- Backdrop -->
+<div id="backdrop" class="backdrop" onclick="closeModal()"></div>
+
+<!-- ══ MODALS ══════════════════════════════════════════════════════════════ -->
+
+<!-- Patient Modal -->
+<div id="modal-patient" class="modal">
+  <div class="modal-hdr">
+    <h3 id="title-patient">מטופל חדש</h3>
+    <button class="close-btn" onclick="closeModal()">×</button>
+  </div>
+  <form id="form-patient" onsubmit="submitForm(event,'patient')">
+    <input type="hidden" id="patient_id">
+    <div class="form-row">
+      <div class="form-group"><label>שם פרטי</label><input id="p_first_name" class="form-control" required></div>
+      <div class="form-group"><label>שם משפחה</label><input id="p_last_name" class="form-control" required></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>תאריך לידה</label><input type="date" id="p_dob" class="form-control" required></div>
+      <div class="form-group"><label>מגדר</label>
+        <select id="p_gender" class="form-control">
+          <option value="Male">זכר (Male)</option>
+          <option value="Female">נקבה (Female)</option>
+          <option value="Other">אחר (Other)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>טלפון</label><input id="p_phone" class="form-control" required></div>
+      <div class="form-group"><label>אימייל</label><input type="email" id="p_email" class="form-control" required></div>
+    </div>
+    <div class="form-group"><label>כתובת</label><textarea id="p_address" class="form-control" required></textarea></div>
+    <div class="form-group"><label>רופא אחראי</label>
+      <select id="p_staffid" class="form-control"><option value="">ללא שיוך</option></select>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+      <button type="submit" class="btn btn-primary">שמור</button>
+    </div>
+  </form>
+</div>
+
+<!-- Staff Modal -->
+<div id="modal-staff" class="modal">
+  <div class="modal-hdr">
+    <h3 id="title-staff">איש סגל חדש</h3>
+    <button class="close-btn" onclick="closeModal()">×</button>
+  </div>
+  <form id="form-staff" onsubmit="submitForm(event,'staff')">
+    <div class="form-row">
+      <div class="form-group"><label>מזהה סגל</label><input type="number" id="s_staffid" class="form-control" required></div>
+      <div class="form-group"><label>תעודת זהות</label><input id="s_idnumber" class="form-control" required></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>שם פרטי</label><input id="s_firstname" class="form-control" required></div>
+      <div class="form-group"><label>שם משפחה</label><input id="s_lastname" class="form-control" required></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>טלפון</label><input id="s_phone" class="form-control" required></div>
+      <div class="form-group"><label>אימייל</label><input type="email" id="s_email" class="form-control" required></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>סטטוס</label>
+        <select id="s_status" class="form-control">
+          <option value="Active">פעיל (Active)</option>
+          <option value="Inactive">לא פעיל (Inactive)</option>
+          <option value="On Leave">בחופשה (On Leave)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>תאריך העסקה</label><input type="date" id="s_hiredate" class="form-control" required></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>מזהה מחלקה</label><input type="number" id="s_deptid" class="form-control"></div>
+      <div class="form-group"><label>מזהה תפקיד</label><input type="number" id="s_roleid" class="form-control"></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+      <button type="submit" class="btn btn-primary">שמור</button>
+    </div>
+  </form>
+</div>
+
+<!-- Admission Modal -->
+<div id="modal-admission" class="modal">
+  <div class="modal-hdr">
+    <h3 id="title-admission">רישום אשפוז</h3>
+    <button class="close-btn" onclick="closeModal()">×</button>
+  </div>
+  <form id="form-admission" onsubmit="submitForm(event,'admission')">
+    <input type="hidden" id="admission_id">
+    <div class="form-group"><label>מטופל</label>
+      <select id="adm_pid" class="form-control" required><option value="">-- בחר מטופל --</option></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>תאריך כניסה</label><input type="datetime-local" id="adm_date" class="form-control" required></div>
+      <div class="form-group"><label>תאריך שחרור (ריק=פעיל)</label><input type="datetime-local" id="adm_disc" class="form-control"></div>
+    </div>
+    <div class="form-group"><label>סיבת אשפוז</label><textarea id="adm_reason" class="form-control" required></textarea></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+      <button type="submit" class="btn btn-primary">שמור</button>
+    </div>
+  </form>
+</div>
+
+<!-- Allergy Modal -->
+<div id="modal-allergy" class="modal">
+  <div class="modal-hdr">
+    <h3 id="title-allergy">תיעוד אלרגיה</h3>
+    <button class="close-btn" onclick="closeModal()">×</button>
+  </div>
+  <form id="form-allergy" onsubmit="submitForm(event,'allergy')">
+    <input type="hidden" id="allergy_id">
+    <div class="form-group"><label>מטופל</label>
+      <select id="all_pid" class="form-control" required><option value="">-- בחר מטופל --</option></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>שם האלרגיה</label><input id="all_name" class="form-control" required></div>
+      <div class="form-group"><label>חומרה</label>
+        <select id="all_sev" class="form-control">
+          <option value="Low">נמוכה (Low)</option>
+          <option value="Moderate">בינונית (Moderate)</option>
+          <option value="High">גבוהה (High)</option>
+          <option value="Life-threatening">מסכנת חיים (Life-threatening)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>הערות</label><textarea id="all_notes" class="form-control"></textarea></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+      <button type="submit" class="btn btn-primary">שמור</button>
+    </div>
+  </form>
+</div>
+
+<!-- History Modal -->
+<div id="modal-history" class="modal">
+  <div class="modal-hdr">
+    <h3 id="title-history">תיעוד רפואי</h3>
+    <button class="close-btn" onclick="closeModal()">×</button>
+  </div>
+  <form id="form-history" onsubmit="submitForm(event,'history')">
+    <input type="hidden" id="history_id">
+    <div class="form-group"><label>מטופל</label>
+      <select id="hist_pid" class="form-control" required><option value="">-- בחר מטופל --</option></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>שם האבחנה</label><input id="hist_cond" class="form-control" required></div>
+      <div class="form-group"><label>תאריך אבחון</label><input type="date" id="hist_date" class="form-control" required></div>
+    </div>
+    <div class="form-group"><label>הערות</label><textarea id="hist_notes" class="form-control"></textarea></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+      <button type="submit" class="btn btn-primary">שמור</button>
+    </div>
+  </form>
+</div>
+
+<!-- Insurance Modal -->
+<div id="modal-insurance" class="modal">
+  <div class="modal-hdr">
+    <h3 id="title-insurance">פוליסת ביטוח</h3>
+    <button class="close-btn" onclick="closeModal()">×</button>
+  </div>
+  <form id="form-insurance" onsubmit="submitForm(event,'insurance')">
+    <input type="hidden" id="insurance_id">
+    <div class="form-group"><label>מטופל</label>
+      <select id="ins_pid" class="form-control" required><option value="">-- בחר מטופל --</option></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>חברת ביטוח</label><input id="ins_prov" class="form-control" required></div>
+      <div class="form-group"><label>מספר פוליסה</label><input id="ins_pol" class="form-control" required></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>סוג כיסוי</label><input id="ins_cov" class="form-control" placeholder="בסיסי, זהב, מורחב..."></div>
+      <div class="form-group"><label>תאריך תפוגה</label><input type="date" id="ins_exp" class="form-control" required></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+      <button type="submit" class="btn btn-primary">שמור</button>
+    </div>
+  </form>
+</div>
+
+<!-- Contact Modal -->
+<div id="modal-contact" class="modal">
+  <div class="modal-hdr">
+    <h3 id="title-contact">איש קשר לחירום</h3>
+    <button class="close-btn" onclick="closeModal()">×</button>
+  </div>
+  <form id="form-contact" onsubmit="submitForm(event,'contact')">
+    <input type="hidden" id="contact_id">
+    <div class="form-group"><label>מטופל</label>
+      <select id="con_pid" class="form-control" required><option value="">-- בחר מטופל --</option></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>שם איש קשר</label><input id="con_name" class="form-control" required></div>
+      <div class="form-group"><label>קרבה משפחתית</label><input id="con_rel" class="form-control" placeholder="הורה, בן זוג, אח..." required></div>
+    </div>
+    <div class="form-group"><label>טלפון</label><input id="con_phone" class="form-control" required></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+      <button type="submit" class="btn btn-primary">שמור</button>
+    </div>
+  </form>
+</div>
+
+<!-- ══ JAVASCRIPT ══════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── State ─────────────────────────────────────────────────────────────────────
+var currentTab = 'dashboard';
+var editingId  = null;
+var editingStaff = false;
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Nav buttons
+  document.querySelectorAll('.nav-item').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      goTab(btn.dataset.tab);
+    });
+  });
+
+  // Search
+  document.getElementById('global-search').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    // If on dashboard or queries, switch to patients automatically
+    if (currentTab === 'dashboard' || currentTab === 'queries') {
+      goTab('patients');
+    }
+    // Filter rows in the active tab
+    var rows = document.querySelectorAll('#tab-' + currentTab + ' tbody tr');
+    if (q === '') {
+      rows.forEach(function(tr) { tr.style.display = ''; });
+    } else {
+      rows.forEach(function(tr) {
+        tr.style.display = tr.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+    }
+  });
+
+  loadStats();
+  loadDropdowns();
+});
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function goTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.nav-item').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  document.querySelectorAll('.tab-pane').forEach(function(p) {
+    p.classList.toggle('active', p.id === 'tab-' + tab);
+  });
+  if (tab === 'dashboard') loadStats();
+  else if (tab !== 'queries') loadTable(tab);
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(msg, isErr) {
+  var w = document.getElementById('toast-wrap');
+  var d = document.createElement('div');
+  d.className = 'toast' + (isErr ? ' err' : '');
+  d.innerHTML = (isErr ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-circle-check"></i>') + ' ' + msg;
+  w.appendChild(d);
+  setTimeout(function() { d.style.opacity='0'; d.style.transition='opacity .4s'; setTimeout(function(){d.remove();},400); }, 3500);
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function loadStats() {
+  fetch('/api/stats')
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.error) { toast('שגיאה בטעינת סטטיסטיקות: ' + d.error, true); return; }
+      document.getElementById('st-patients').textContent    = Number(d.total_patients).toLocaleString();
+      document.getElementById('st-admissions').textContent  = Number(d.active_admissions).toLocaleString();
+      document.getElementById('st-staff').textContent       = Number(d.total_staff).toLocaleString();
+      document.getElementById('st-active-staff').textContent= Number(d.active_staff).toLocaleString();
+    })
+    .catch(function(){ toast('שגיאה בחיבור לשרת', true); });
+}
+
+// ── Dropdowns ─────────────────────────────────────────────────────────────────
+function loadDropdowns() {
+  fetch('/api/patients/list')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      ['adm_pid','all_pid','hist_pid','ins_pid','con_pid','risk-sel'].forEach(function(id) {
+        var sel = document.getElementById(id);
+        if (!sel) return;
+        var cur = sel.value;
+        sel.innerHTML = '<option value="">-- בחר מטופל --</option>';
+        data.forEach(function(p) {
+          var o = document.createElement('option');
+          o.value = p.patient_id;
+          o.textContent = p.name + ' (#' + p.patient_id + ')';
+          sel.appendChild(o);
+        });
+        if (cur) sel.value = cur;
+      });
+    });
+
+  fetch('/api/staff/list')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var sel = document.getElementById('p_staffid');
+      if (!sel) return;
+      sel.innerHTML = '<option value="">ללא שיוך</option>';
+      data.forEach(function(s) {
+        var o = document.createElement('option');
+        o.value = s.staffid;
+        o.textContent = s.name + ' (#' + s.staffid + ')';
+        sel.appendChild(o);
+      });
+    });
+}
+
+// ── Table ─────────────────────────────────────────────────────────────────────
+var ENDPOINTS = {
+  patients:   '/api/patients',
+  staff:      '/api/staff',
+  admissions: '/api/admissions',
+  allergies:  '/api/allergies',
+  history:    '/api/medical-histories',
+  insurance:  '/api/insurances',
+  contacts:   '/api/emergency-contacts'
+};
+
+function loadTable(tab) {
+  var tbody = document.querySelector('#tbl-' + tab + ' tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="20" style="text-align:center;padding:30px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> טוען...</td></tr>';
+
+  fetch(ENDPOINTS[tab])
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.error) { toast('שגיאה: ' + data.error, true); return; }
+      renderTable(tab, data, tbody);
+    })
+    .catch(function(){ toast('שגיאת תקשורת', true); });
+}
+
+function renderTable(tab, data, tbody) {
+  tbody.innerHTML = '';
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="20" style="text-align:center;padding:30px;color:var(--muted)">אין רשומות</td></tr>';
+    return;
+  }
+  data.forEach(function(r) {
+    var tr = document.createElement('tr');
+    var id = r.patient_id || r.staffid || r.admission_id || r.allergy_id || r.history_id || r.insurance_id || r.contact_id;
+    var acts = '<td class="actions-cell">' +
+      '<button class="btn btn-secondary btn-sm" onclick="editRec(\'' + tab + '\',' + id + ')"><i class="fa-solid fa-pen"></i> ערוך</button>' +
+      '<button class="btn btn-danger btn-sm" onclick="delRec(\'' + tab + '\',' + id + ')"><i class="fa-solid fa-trash"></i> מחק</button>' +
+      '</td>';
+
+    var cells = '';
+    if (tab === 'patients') {
+      cells = '<td>#' + r.patient_id + '</td><td>' + esc(r.first_name) + '</td><td>' + esc(r.last_name) + '</td>' +
+        '<td>' + fmtDate(r.date_of_birth) + '</td><td>' + genderHe(r.gender) + '</td>' +
+        '<td>' + esc(r.phone) + '</td><td>' + esc(r.email) + '</td>' +
+        '<td>' + (r.staff_name ? esc(r.staff_name) : '<span style="color:var(--muted)">—</span>') + '</td>';
+    } else if (tab === 'staff') {
+      var sBadge = r.status === 'Active' ? 'badge-active' : r.status === 'Inactive' ? 'badge-inactive' : 'badge-leave';
+      cells = '<td>#' + r.staffid + '</td><td>' + esc(r.firstname) + '</td><td>' + esc(r.lastname) + '</td>' +
+        '<td>' + esc(r.idnumber) + '</td><td>' + esc(r.phone) + '</td><td>' + esc(r.email) + '</td>' +
+        '<td><span class="badge ' + sBadge + '">' + esc(r.status) + '</span></td>' +
+        '<td>' + fmtDate(r.hiredate) + '</td>' +
+        '<td>' + (r.deptid ? 'מח\' ' + r.deptid : '—') + '</td>' +
+        '<td>' + (r.roleid ? 'תפקיד ' + r.roleid : '—') + '</td>';
+    } else if (tab === 'admissions') {
+      cells = '<td>#' + r.admission_id + '</td><td>' + esc(r.patient_name) + '</td>' +
+        '<td>' + fmtDT(r.admission_date) + '</td>' +
+        '<td>' + (r.discharge_date ? fmtDT(r.discharge_date) : '<span class="badge badge-active">פעיל</span>') + '</td>' +
+        '<td>' + esc(r.reason) + '</td>';
+    } else if (tab === 'allergies') {
+      var sevClass = {Low:'badge-low',Moderate:'badge-moderate',High:'badge-high','Life-threatening':'badge-lt'}[r.severity] || '';
+      cells = '<td>#' + r.allergy_id + '</td><td>' + esc(r.patient_name) + '</td>' +
+        '<td>' + esc(r.allergy_name) + '</td>' +
+        '<td><span class="badge ' + sevClass + '">' + esc(r.severity) + '</span></td>' +
+        '<td>' + esc(r.notes || '') + '</td>';
+    } else if (tab === 'history') {
+      cells = '<td>#' + r.history_id + '</td><td>' + esc(r.patient_name) + '</td>' +
+        '<td>' + esc(r.condition_name) + '</td><td>' + fmtDate(r.diagnosis_date) + '</td>' +
+        '<td>' + esc(r.notes || '') + '</td>';
+    } else if (tab === 'insurance') {
+      cells = '<td>#' + r.insurance_id + '</td><td>' + esc(r.patient_name) + '</td>' +
+        '<td>' + esc(r.provider_name) + '</td><td><code>' + esc(r.policy_number) + '</code></td>' +
+        '<td>' + esc(r.coverage_type || '') + '</td><td>' + fmtDate(r.expiration_date) + '</td>';
+    } else if (tab === 'contacts') {
+      cells = '<td>#' + r.contact_id + '</td><td>' + esc(r.patient_name) + '</td>' +
+        '<td>' + esc(r.name) + '</td><td>' + esc(r.relationship) + '</td><td>' + esc(r.phone) + '</td>';
+    }
+    tr.innerHTML = cells + acts;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── Modal Open/Close ──────────────────────────────────────────────────────────
+function openAdd(type) {
+  editingId = null; editingStaff = false;
+  loadDropdowns();
+  var f = document.getElementById('form-' + type);
+  if (f) f.reset();
+  var hid = document.getElementById(type === 'staff' ? 's_staffid' : (type + '_id'));
+  if (hid) { hid.value = ''; hid.removeAttribute('readonly'); }
+  var t = document.getElementById('title-' + type);
+  if (t) t.textContent = TITLES[type] + ' חדש/ה';
+  document.getElementById('backdrop').style.display = 'block';
+  document.getElementById('modal-' + type).style.display = 'block';
+}
+
+function closeModal() {
+  document.getElementById('backdrop').style.display = 'none';
+  document.querySelectorAll('.modal').forEach(function(m){ m.style.display = 'none'; });
+}
+
+// ── Edit ──────────────────────────────────────────────────────────────────────
+function editRec(tab, id) {
+  loadDropdowns();
+  fetch(ENDPOINTS[tab] + '/' + id)
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.error) { toast('שגיאה: ' + data.error, true); return; }
+      var type = TAB_TO_TYPE[tab];
+      fillForm(type, data);
+      var t = document.getElementById('title-' + type);
+      if (t) t.textContent = 'עדכון ' + TITLES[type];
+      document.getElementById('backdrop').style.display = 'block';
+      document.getElementById('modal-' + type).style.display = 'block';
+    })
+    .catch(function(){ toast('שגיאה בטעינת רשומה', true); });
+}
+
+function fillForm(type, d) {
+  function set(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.value = (val == null) ? '' : val;
+  }
+  editingId = null; editingStaff = false;
+  if (type === 'patient') {
+    editingId = d.patient_id;
+    set('patient_id', d.patient_id); set('p_first_name', d.first_name); set('p_last_name', d.last_name);
+    set('p_dob', d.date_of_birth); set('p_gender', d.gender);
+    set('p_phone', d.phone); set('p_email', d.email); set('p_address', d.address);
+    set('p_staffid', d.staffid || '');
+  } else if (type === 'staff') {
+    editingStaff = true;
+    var sf = document.getElementById('s_staffid');
+    if (sf) { sf.value = d.staffid; sf.setAttribute('readonly','true'); }
+    set('s_idnumber', d.idnumber); set('s_firstname', d.firstname); set('s_lastname', d.lastname);
+    set('s_phone', d.phone); set('s_email', d.email); set('s_status', d.status);
+    set('s_hiredate', d.hiredate); set('s_deptid', d.deptid || ''); set('s_roleid', d.roleid || '');
+  } else if (type === 'admission') {
+    editingId = d.admission_id;
+    set('admission_id', d.admission_id); set('adm_pid', d.patient_id);
+    set('adm_date', d.admission_date ? d.admission_date.substring(0,16) : '');
+    set('adm_disc', d.discharge_date ? d.discharge_date.substring(0,16) : '');
+    set('adm_reason', d.reason);
+  } else if (type === 'allergy') {
+    editingId = d.allergy_id;
+    set('allergy_id', d.allergy_id); set('all_pid', d.patient_id);
+    set('all_name', d.allergy_name); set('all_sev', d.severity); set('all_notes', d.notes || '');
+  } else if (type === 'history') {
+    editingId = d.history_id;
+    set('history_id', d.history_id); set('hist_pid', d.patient_id);
+    set('hist_cond', d.condition_name); set('hist_date', d.diagnosis_date); set('hist_notes', d.notes || '');
+  } else if (type === 'insurance') {
+    editingId = d.insurance_id;
+    set('insurance_id', d.insurance_id); set('ins_pid', d.patient_id);
+    set('ins_prov', d.provider_name); set('ins_pol', d.policy_number);
+    set('ins_cov', d.coverage_type || ''); set('ins_exp', d.expiration_date);
+  } else if (type === 'contact') {
+    editingId = d.contact_id;
+    set('contact_id', d.contact_id); set('con_pid', d.patient_id);
+    set('con_name', d.name); set('con_rel', d.relationship); set('con_phone', d.phone);
+  }
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+function submitForm(ev, type) {
+  ev.preventDefault();
+  var tab = TYPE_TO_TAB[type];
+  var url = ENDPOINTS[tab];
+  var method = 'POST';
+  var body = buildBody(type);
+
+  if (editingStaff) {
+    method = 'PUT'; url += '/' + document.getElementById('s_staffid').value;
+  } else if (editingId) {
+    method = 'PUT'; url += '/' + editingId;
+  }
+
+  fetch(url, { method: method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) })
+    .then(function(r){ return r.json(); })
+    .then(function(res) {
+      if (res.error) { toast('שגיאה: ' + res.error, true); return; }
+      toast(method === 'POST' ? 'נוצרה רשומה חדשה בהצלחה!' : 'הרשומה עודכנה בהצלחה!');
+      closeModal();
+      loadTable(tab);
+    })
+    .catch(function(){ toast('שגיאת שרת', true); });
+}
+
+function buildBody(type) {
+  function g(id) { var el = document.getElementById(id); return el ? (el.value.trim() || null) : null; }
+  if (type === 'patient') return {first_name:g('p_first_name'),last_name:g('p_last_name'),date_of_birth:g('p_dob'),gender:g('p_gender'),phone:g('p_phone'),email:g('p_email'),address:g('p_address'),staffid:g('p_staffid')};
+  if (type === 'staff')   return {staffid:g('s_staffid'),firstname:g('s_firstname'),lastname:g('s_lastname'),idnumber:g('s_idnumber'),phone:g('s_phone'),email:g('s_email'),status:g('s_status'),hiredate:g('s_hiredate'),deptid:g('s_deptid'),roleid:g('s_roleid')};
+  if (type === 'admission') return {patient_id:g('adm_pid'),admission_date:g('adm_date'),discharge_date:g('adm_disc'),reason:g('adm_reason')};
+  if (type === 'allergy')   return {patient_id:g('all_pid'),allergy_name:g('all_name'),severity:g('all_sev'),notes:g('all_notes')};
+  if (type === 'history')   return {patient_id:g('hist_pid'),condition_name:g('hist_cond'),diagnosis_date:g('hist_date'),notes:g('hist_notes')};
+  if (type === 'insurance') return {patient_id:g('ins_pid'),provider_name:g('ins_prov'),policy_number:g('ins_pol'),coverage_type:g('ins_cov'),expiration_date:g('ins_exp')};
+  if (type === 'contact')   return {patient_id:g('con_pid'),name:g('con_name'),relationship:g('con_rel'),phone:g('con_phone')};
+  return {};
+}
+
+// ── Delete ────────────────────────────────────────────────────────────────────
+function delRec(tab, id) {
+  if (!confirm('למחוק רשומה זו לצמיתות?')) return;
+  fetch(ENDPOINTS[tab] + '/' + id, {method:'DELETE'})
+    .then(function(r){ return r.json(); })
+    .then(function(res) {
+      if (res.error) { toast('שגיאה במחיקה: ' + res.error, true); return; }
+      toast('הרשומה נמחקה');
+      loadTable(tab);
+    })
+    .catch(function(){ toast('שגיאה במחיקה', true); });
+}
+
+// ── Queries ───────────────────────────────────────────────────────────────────
+function runQuery(num) {
+  var out = document.getElementById('out-' + num);
+  out.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:var(--muted)"></i> מריץ...';
+  fetch('/api/queries/' + num)
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.error) { out.innerHTML = '<span style="color:var(--danger)">שגיאה: ' + esc(data.error) + '</span>'; return; }
+      if (!data.length) { out.innerHTML = '<span style="color:var(--muted)">אין תוצאות.</span>'; return; }
+      var keys = Object.keys(data[0]);
+      var html = '<table class="res-table"><thead><tr>' + keys.map(function(k){return '<th>'+heCol(k)+'</th>';}).join('') + '</tr></thead><tbody>';
+      data.forEach(function(row) {
+        html += '<tr>' + keys.map(function(k){return '<td>'+(row[k]==null?'—':esc(String(row[k])))+'</td>';}).join('') + '</tr>';
+      });
+      out.innerHTML = html + '</tbody></table>';
+    })
+    .catch(function(){ out.innerHTML = '<span style="color:var(--danger)">שגיאת תקשורת</span>'; });
+}
+
+function runRisk() {
+  var pid = document.getElementById('risk-sel').value;
+  var out = document.getElementById('out-risk');
+  if (!pid) { toast('בחרי מטופל תחילה', true); return; }
+  out.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:var(--muted)"></i> מחשב...';
+  fetch('/api/procedures/evaluate_risk/' + pid, {method:'POST'})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.error) { out.innerHTML = '<span style="color:var(--danger)">' + esc(d.error) + '</span>'; return; }
+      var lvl = d.risk_level || '?';
+      var cls = lvl.indexOf('Critical') !== -1 ? 'badge-lt' : lvl.indexOf('Moderate') !== -1 ? 'badge-moderate' : 'badge-low';
+      out.innerHTML = 'רמת סיכון: <span class="badge ' + cls + '">' + esc(lvl) + '</span>';
+      toast('הערכת סיכון הושלמה!');
+    })
+    .catch(function(){ out.innerHTML = '<span style="color:var(--danger)">שגיאת שרת</span>'; });
+}
+
+function runDischarge() {
+  var kw = document.getElementById('discharge-kw').value.trim();
+  var out = document.getElementById('out-discharge');
+  if (!kw) { toast('הכניסי מילת מפתח', true); return; }
+  out.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:var(--muted)"></i> מבצע...';
+  fetch('/api/procedures/bulk_discharge', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({keyword:kw})})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.error) { out.innerHTML = '<span style="color:var(--danger)">' + esc(d.error) + '</span>'; return; }
+      out.innerHTML = '<span style="color:var(--success)">' + esc(d.message) + '</span>';
+      toast('שחרור המוני בוצע!');
+    })
+    .catch(function(){ out.innerHTML = '<span style="color:var(--danger)">שגיאת תקשורת</span>'; });
+}
+
+// ── Lookup tables ─────────────────────────────────────────────────────────────
+var TITLES = {patient:'מטופל',staff:'איש סגל',admission:'אשפוז',allergy:'אלרגיה',history:'תיק רפואי',insurance:'פוליסה',contact:'איש קשר'};
+var TAB_TO_TYPE = {patients:'patient',staff:'staff',admissions:'admission',allergies:'allergy',history:'history',insurance:'insurance',contacts:'contact'};
+var TYPE_TO_TAB = {patient:'patients',staff:'staff',admission:'admissions',allergy:'allergies',history:'history',insurance:'insurance',contact:'contacts'};
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function genderHe(g) { return g==='Male'?'זכר':g==='Female'?'נקבה':(g||''); }
+function fmtDate(s) {
+  if (!s) return '—';
+  try { return new Date(s).toLocaleDateString('he-IL'); } catch(e){ return s; }
+}
+function fmtDT(s) {
+  if (!s) return '—';
+  try { return new Date(s).toLocaleString('he-IL',{dateStyle:'short',timeStyle:'short'}); } catch(e){ return s; }
+}
+function heCol(k) {
+  var m = {first_name:'שם פרטי',last_name:'שם משפחה',total_admissions:'סה"כ אשפוזים',patient_name:'שם מטופל',contact_person:'איש קשר',relationship:'קרבה',phone:'טלפון'};
+  return m[k]||k;
+}
+</script>
+</body>
+</html>
